@@ -2,6 +2,7 @@ package com.tlear.pegasus;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -61,6 +62,13 @@ public class Pegasus extends ApplicationAdapter {
 		// Render the ship
 		batch.draw(shipImage, ship.x, ship.y);
 		batch.end();
+		
+		// Checking for keyboard input
+		if (Gdx.input.isKeyPressed(Keys.A)) ship.x -= 200 * Gdx.graphics.getDeltaTime();
+		if (Gdx.input.isKeyPressed(Keys.D)) ship.x += 200 * Gdx.graphics.getDeltaTime();
+		if (Gdx.input.isKeyPressed(Keys.S)) ship.y -= 200 * Gdx.graphics.getDeltaTime();
+		if (Gdx.input.isKeyPressed(Keys.W)) ship.y += 200 * Gdx.graphics.getDeltaTime();
+		
 	}
 	
 	@Override
