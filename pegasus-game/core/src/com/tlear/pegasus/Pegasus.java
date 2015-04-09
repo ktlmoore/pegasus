@@ -9,9 +9,21 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+
+import java.util.HashSet;
 
 public class Pegasus extends ApplicationAdapter {
+	
+	public Pegasus(int width, int height) {
+		this.windowWidth = width;
+		this.windowHeight = height;
+	}
+	
+	private int windowWidth;
+	private int windowHeight;
 	
 	BitmapFont font;
 	
@@ -22,9 +34,14 @@ public class Pegasus extends ApplicationAdapter {
 	
 	// Texture init
 	private Texture shipImage;
+	private TextureRegion shipTexture;
 	
 	// Model init
 	private Rectangle ship;
+	
+	// Movement model
+	private float shipAngle;
+	private double shipSpeed;
 	
 	@Override
 	public void create () {
@@ -35,10 +52,11 @@ public class Pegasus extends ApplicationAdapter {
 		
 		// Initialise camera
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800, 480);
+		camera.setToOrtho(false, windowWidth, windowHeight);
 		
 		// Initialise textures
 		shipImage = new Texture(Gdx.files.internal("ship.png"));
+		shipTexture = new TextureRegion(shipImage);
 		
 		// Initialise model
 		ship = new Rectangle();
@@ -47,6 +65,9 @@ public class Pegasus extends ApplicationAdapter {
 		
 		ship.x = 50;
 		ship.y = 50;
+		
+		shipAngle = 0;
+		shipSpeed = 0;
 	}
 
 	@Override
@@ -60,15 +81,44 @@ public class Pegasus extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		// Render the ship
-		batch.draw(shipImage, ship.x, ship.y);
+		batch.draw(shipTexture, ship.x, ship.y, ship.width / 2, ship.height / 2, ship.width, ship.height, 1.0f, 1.0f, shipAngle-90);
 		batch.end();
 		
 		// Checking for keyboard input
-		if (Gdx.input.isKeyPressed(Keys.A)) ship.x -= 200 * Gdx.graphics.getDeltaTime();
-		if (Gdx.input.isKeyPressed(Keys.D)) ship.x += 200 * Gdx.graphics.getDeltaTime();
-		if (Gdx.input.isKeyPressed(Keys.S)) ship.y -= 200 * Gdx.graphics.getDeltaTime();
-		if (Gdx.input.isKeyPressed(Keys.W)) ship.y += 200 * Gdx.graphics.getDeltaTime();
+		if (Gdx.input.isKeyPressed(Keys.A)) shipAngle += 1;
+		if (Gdx.input.isKeyPressed(Keys.D)) shipAngle -= 1;
+		if (Gdx.input.isKeyPressed(Keys.S)) shipSpeed -= 5;
+		if (Gdx.input.isKeyPressed(Keys.W)) shipSpeed += 5;
 		
+		System.out.println(shipSpeed);
+		//System.out.println("SHIPX: " + ship.x + ", SHIPY: " + ship.y);
+		
+		double dx = shipSpeed * Math.cos(degreesToRadians(shipAngle)) * Gdx.graphics.getDeltaTime();
+		double dy = shipSpeed * Math.sin(degreesToRadians(shipAngle)) * Gdx.graphics.getDeltaTime();
+		
+		checkOutOfBounds();
+		
+		ship.x += dx;
+		ship.y += dy;
+		
+		
+	}
+	
+	private void checkOutOfBounds() {
+		if (ship.x > windowWidth) {
+			ship.x = 0;
+		} else if (ship.x < 0) {
+			ship.x = windowWidth;
+		}
+		if (ship.y > windowHeight) {
+			ship.y = 0;
+		} else if (ship.y < 0) {
+			ship.y = windowHeight;
+		}
+	}
+	
+	private double degreesToRadians(float deg) {
+		return deg * Math.PI / 180;
 	}
 	
 	@Override
