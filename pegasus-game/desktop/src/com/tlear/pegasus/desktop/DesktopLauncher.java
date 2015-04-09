@@ -9,9 +9,9 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		
 		config.title = "Pegasus";
-		config.width = 800;
-		config.height = 480;
+		config.width = 1000;
+		config.height = 600;
 		
-		new LwjglApplication(new Pegasus(), config);
+		new LwjglApplication(new Pegasus(config.width, config.height), config);
 	}
 }
