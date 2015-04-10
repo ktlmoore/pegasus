@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 
+import java.util.HashMap;
+
 public class Ship {
 	private Rectangle hitBox;
 	private float x;
@@ -18,6 +20,9 @@ public class Ship {
 	// Ship textures
 	private Texture shipImage;
 	private TextureRegion shipTexture;
+	
+	private HashMap<ShipDirection, Texture> shipImages;
+	private HashMap<ShipDirection, TextureRegion> shipTextures;
 	
 	// Other textures
 	private BitmapFont font;
@@ -52,6 +57,21 @@ public class Ship {
 		// Load texture
 		shipImage = new Texture(Gdx.files.internal("ship.png"));
 		shipTexture = new TextureRegion(shipImage);
+		
+		// Set up maps of directions
+		shipImages = new HashMap<ShipDirection, Texture>();
+		shipImages.put(ShipDirection.NONE, new Texture(Gdx.files.internal("ship.png")));
+		shipImages.put(ShipDirection.FORWARD, new Texture(Gdx.files.internal("shipForward.png")));
+		shipImages.put(ShipDirection.BACKWARD, new Texture(Gdx.files.internal("shipBackward.png")));
+		shipImages.put(ShipDirection.LEFT, new Texture(Gdx.files.internal("shipLeft.png")));
+		shipImages.put(ShipDirection.RIGHT, new Texture(Gdx.files.internal("shipRight.png")));
+		
+		shipTextures = new HashMap<ShipDirection, TextureRegion>();
+		shipTextures.put(ShipDirection.NONE, new TextureRegion(shipImages.get(ShipDirection.NONE)));
+		shipTextures.put(ShipDirection.FORWARD, new TextureRegion(shipImages.get(ShipDirection.FORWARD)));
+		shipTextures.put(ShipDirection.BACKWARD, new TextureRegion(shipImages.get(ShipDirection.BACKWARD)));
+		shipTextures.put(ShipDirection.LEFT, new TextureRegion(shipImages.get(ShipDirection.LEFT)));
+		shipTextures.put(ShipDirection.RIGHT, new TextureRegion(shipImages.get(ShipDirection.RIGHT)));
 		
 		// Load other textures
 		font = new BitmapFont();
