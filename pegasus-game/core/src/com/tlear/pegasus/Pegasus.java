@@ -13,9 +13,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 public class Pegasus extends ApplicationAdapter {
 	
 	public Pegasus(int width, int height) {
-		this.windowWidth = width;
-		this.windowHeight = height;
+		window = new Window(width, height);
 	}
+	
+	private Window window;
 	
 	private int windowWidth;
 	private int windowHeight;
@@ -48,7 +49,7 @@ public class Pegasus extends ApplicationAdapter {
 		
 		
 		// Initialise ship
-		ship = new Ship(windowWidth, windowHeight);
+		ship = new Ship(window);
 		
 	}
 
