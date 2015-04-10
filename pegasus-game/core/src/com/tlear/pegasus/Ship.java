@@ -18,9 +18,6 @@ public class Ship {
 	private float y;
 	
 	// Ship textures
-	private Texture shipImage;
-	private TextureRegion shipTexture;
-	
 	private HashMap<ShipDirection, Texture> shipImages;
 	private HashMap<ShipDirection, TextureRegion> shipTextures;
 	
@@ -54,9 +51,7 @@ public class Ship {
 	private String debugString;
 	
 	public Ship(int windowWidth, int windowHeight) {
-		// Load texture
-		shipImage = new Texture(Gdx.files.internal("ship.png"));
-		shipTexture = new TextureRegion(shipImage);
+		/* Load textures */
 		
 		// Set up maps of directions
 		shipImages = new HashMap<ShipDirection, Texture>();
