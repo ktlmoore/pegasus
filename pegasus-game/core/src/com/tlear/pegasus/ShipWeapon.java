@@ -4,9 +4,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public interface ShipWeapon {
 	
-	public void setX();
-	public void setY();
-	public void setAngle();
+	public void setX(int x);
+	public void setY(int y);
+	public void setAngle(int a);
 	
 	public void addX();
 	public void addY();
