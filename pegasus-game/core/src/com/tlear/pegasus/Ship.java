@@ -35,7 +35,8 @@ public class Ship {
 	private int shipHeight;
 	
 	// Stage size
-	private Window window;
+	private int windowWidth;
+	private int windowHeight;
 	
 	// Hitbox offsets
 	private float offX;
@@ -45,7 +46,7 @@ public class Ship {
 	private boolean debugMode;
 	private String debugString;
 	
-	public Ship(Window window) {
+	public Ship(int windowWidth, int windowHeight) {
 		// Load texture
 		shipImage = new Texture(Gdx.files.internal("ship.png"));
 		shipTexture = new TextureRegion(shipImage);
@@ -81,7 +82,8 @@ public class Ship {
 		hitBox.x = x + offX;
 		hitBox.y = y + offY;
 		
-		this.window = window;
+		this.windowWidth = windowWidth;
+		this.windowHeight = windowHeight;
 		
 		// Set debug mode
 		debugMode = true;
@@ -93,7 +95,7 @@ public class Ship {
 		batch.begin();
 		batch.draw(shipTexture, x, y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle-90);
 		if (debugMode) {
-			font.drawMultiLine(batch, debugString, 10, window.getWindowHeight()-10);
+			font.drawMultiLine(batch, debugString, 10, windowHeight-10);
 		}
 		batch.end();
 		
@@ -139,8 +141,6 @@ public class Ship {
 	
 	
 	private void checkOutOfBounds() {
-		int windowWidth = window.getWindowWidth();
-		int windowHeight = window.getWindowHeight();
 		if (x > windowWidth - shipWidth/2) {
 			x = -shipWidth/2;
 		} else if (x < -shipWidth/2) {
