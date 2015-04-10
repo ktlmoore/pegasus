@@ -29,9 +29,11 @@ public class Ship {
 	private float shipSpeed;
 	
 	private ShipDirection shipDirection;
+	public float rotationalVelocity;
 	
 	// Constraints
 	private int maxSpeed;
+	private int maxRotationalVelocity;
 	
 	// Ship texture size
 	private int shipTexWidth;
@@ -79,6 +81,7 @@ public class Ship {
 		// Initialise speed and rotation
 		shipSpeed = 0f;
 		shipAngle = 0f;
+		rotationalVelocity = 0f;
 		
 		shipDirection = ShipDirection.NONE;
 		
@@ -109,6 +112,7 @@ public class Ship {
 		
 		// Initialise constraints
 		maxSpeed = 200;
+		maxRotationalVelocity = 2;
 		
 		// Set debug mode
 		debugMode = true;
@@ -136,20 +140,24 @@ public class Ship {
 		x += dx;
 		y += dy;
 		
+		shipAngle += rotationalVelocity;
+		
 		checkOutOfBounds();
 		
 		hitBox.x = x + offX;
 		hitBox.y = y + offY;
 		
 		if (debugMode) {
-			debugString = "Speed: " + shipSpeed + "\nAngle: " + shipAngle + "\nx: " + (int) x + "\ny: " + (int) y;
+			debugString = "Speed: " + shipSpeed + "\nAngle: " + (int) shipAngle + "\nx: " + (int) x + "\ny: " + (int) y + "\nRotVel: " + (double) ((int) (rotationalVelocity*100)) / 100 + "º";
 		}
 		
 	}
 	
-	public void addAngle(int a) {
-		shipAngle += a;
-		shipDirection = a > 0 ? ShipDirection.LEFT : ShipDirection.RIGHT;
+	public void addAngle(float a) {
+		if (Math.abs(rotationalVelocity + a) <= maxRotationalVelocity) {
+			rotationalVelocity += a;
+			shipDirection = a > 0 ? ShipDirection.LEFT : ShipDirection.RIGHT;
+		}
 	}
 	
 	public void addSpeed(int s) {
