@@ -14,7 +14,7 @@ public interface ShipWeapon {
 	
 	public int getX();
 	public int getY();
-	public int getAngle();
+	public float getAngle();
 	public int getWidth();
 	public int getHeight();
 	public int getTexWidth();
