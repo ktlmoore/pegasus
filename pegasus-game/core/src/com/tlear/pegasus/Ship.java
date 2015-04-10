@@ -145,7 +145,7 @@ public class Ship {
 		// Draw ship
 		batch.draw(shipTextures.get(shipDirection), x, y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle-90);
 		// Draw laser turret
-	
+		batch.draw(laserTurret.getTextureRegion(), x + laserTurret.getX(), y + laserTurret.getY(), x + laserTurret.getX(), y + laserTurret.getY(), laserTurret.getTexWidth(), laserTurret.getTexHeight(), 1.0f, 1.0f, 0);
 		// Draw debug details
 		if (debugMode) {
 			font.drawMultiLine(batch, debugString, 10, windowHeight-10);
@@ -174,15 +174,15 @@ public class Ship {
 		x += dx;
 		y += dy;
 		
-		laserTurret.addX(dx);
-		laserTurret.addY(dy);
-		
 		shipAngle += rotationalVelocity;
 		
 		checkOutOfBounds();
 		
 		hitBox.x = x + offX;
 		hitBox.y = y + offY;
+		
+		laserTurret.setX(x + laserTurret.getX());
+		laserTurret.setY(y + laserTurret.getY());
 		
 		if (debugMode) {
 			debugString = "Speed: " + shipSpeed + "\nAngle: " + (int) shipAngle + "\nx: " + (int) x + "\ny: " + (int) y + "\nRotVel: " + (double) ((int) (rotationalVelocity*100)) / 100 + "º";

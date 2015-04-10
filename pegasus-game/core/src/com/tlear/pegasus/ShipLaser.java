@@ -9,12 +9,12 @@ public class ShipLaser implements ShipWeapon {
 	private Texture laserImage;
 	private TextureRegion laserTexture;
 	
-	private int laserTexWidth;
-	private int laserTexHeight;
+	private float laserTexWidth;
+	private float laserTexHeight;
 
 	// Model
-	private double x;
-	private double y;
+	private float x;
+	private float y;
 	
 	private int width;
 	private int height;
@@ -29,13 +29,13 @@ public class ShipLaser implements ShipWeapon {
 		laserImage = new Texture("shipLaserTurret.png");
 		laserTexture = new TextureRegion(laserImage);
 		
-		laserTexWidth = 21;
-		laserTexHeight = 23;
+		laserTexWidth = 21f;
+		laserTexHeight = 23f;
 		
 		// init model info
 		
-		x = (int) location.x;
-		y = (int) location.y;
+		x = location.x;
+		y = location.y;
 		
 		angle = 0;
 		
@@ -45,11 +45,11 @@ public class ShipLaser implements ShipWeapon {
 	}
 	
 	// Setters, adders, getters
-	public void setX(double x) {
+	public void setX(float x) {
 		this.x = x;
 	}
 
-	public void setY(double y) {
+	public void setY(float y) {
 		this.y = y;
 	}
 
@@ -57,11 +57,11 @@ public class ShipLaser implements ShipWeapon {
 		this.angle = a;
 	}
 
-	public void addX(double x) {
+	public void addX(float x) {
 		this.x += x;
 	}
 
-	public void addY(double y) {
+	public void addY(float y) {
 		this.y += y;
 	}
 
@@ -69,11 +69,11 @@ public class ShipLaser implements ShipWeapon {
 		this.angle += a;
 	}
 
-	public double getX() {
+	public float getX() {
 		return x;
 	}
 
-	public double getY() {
+	public float getY() {
 		return y;
 	}
 
@@ -93,11 +93,11 @@ public class ShipLaser implements ShipWeapon {
 		return height;
 	}
 	
-	public int getTexWidth() {
+	public float getTexWidth() {
 		return laserTexWidth;
 	}
 	
-	public int getTexHeight() {
+	public float getTexHeight() {
 		return laserTexHeight;
 	}
 
