@@ -120,6 +120,8 @@ public class Ship {
 		
 		// Initialise parts
 		laserTurret = new ShipLaser(new Vector2(shipTexWidth / 2, shipTexHeight / 2));
+		laserTurret.addX(-laserTurret.getTexWidth() / 2);
+		laserTurret.addY(-laserTurret.getTexHeight() / 2);
 		
 		// Initialise window
 		
@@ -144,12 +146,6 @@ public class Ship {
 		batch.begin();
 		// Draw ship
 		batch.draw(shipTextures.get(shipDirection), x, y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle-90);
-		// Draw laser turret
-		batch.draw(laserTurret.getTextureRegion(), x + laserTurret.getX(), y + laserTurret.getY(), x + laserTurret.getX(), y + laserTurret.getY(), laserTurret.getTexWidth(), laserTurret.getTexHeight(), 1.0f, 1.0f, 0);
-		// Draw debug details
-		if (debugMode) {
-			font.drawMultiLine(batch, debugString, 10, windowHeight-10);
-		}
 		batch.end();
 		
 		
@@ -159,12 +155,26 @@ public class Ship {
 			shapeRenderer.setColor(1, 0, 0, 1);
 			shapeRenderer.line(new Vector2(x + shipTexWidth / 2, y + shipTexHeight / 2), laserTarget);
 		}
-		//Draw debug info
+		shapeRenderer.end();
+		
+		// Draw laser turret after laser
+		batch.begin();
+		batch.draw(laserTurret.getTextureRegion(), x + laserTurret.getX(), y + laserTurret.getY(), laserTurret.getTexWidth() / 2, laserTurret.getTexHeight() / 2, laserTurret.getTexWidth(), laserTurret.getTexHeight(), 1.0f, 1.0f, shipAngle-90);
+		batch.end();
+		
+		// Draw debug info last always
 		if (debugMode) {
+			//Draw debug info
+			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(0, 1, 0, 1);
 			shapeRenderer.rect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
+			shapeRenderer.end();
+			
+			batch.begin();
+			font.drawMultiLine(batch, debugString, 10, windowHeight-10);
+			batch.end();
 		}
-		shapeRenderer.end();
+		
 		
 		// Move the ship
 
@@ -180,9 +190,6 @@ public class Ship {
 		
 		hitBox.x = x + offX;
 		hitBox.y = y + offY;
-		
-		laserTurret.setX(x + laserTurret.getX());
-		laserTurret.setY(y + laserTurret.getY());
 		
 		if (debugMode) {
 			debugString = "Speed: " + shipSpeed + "\nAngle: " + (int) shipAngle + "\nx: " + (int) x + "\ny: " + (int) y + "\nRotVel: " + (double) ((int) (rotationalVelocity*100)) / 100 + "º";
