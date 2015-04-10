@@ -46,6 +46,8 @@ public class Ship {
 	private int shipWidth;
 	private int shipHeight;
 	
+	private Vector2 shipCentre;
+	
 	// Stage size
 	private int windowWidth;
 	private int windowHeight;
@@ -100,6 +102,8 @@ public class Ship {
 		x = 50;
 		y = 50;
 		
+		
+		
 		// Initialise ship texture size
 		shipTexWidth = 95;
 		shipTexHeight = 108;
@@ -107,6 +111,8 @@ public class Ship {
 		// Initalise the ship model size
 		shipWidth = 60;
 		shipHeight = 100;
+		
+		shipCentre = new Vector2(x + shipTexWidth / 2, y + shipTexHeight / 2);
 		
 		// Initialise the hitbox to always be contained inside the ship's texture
 		// regardless of the rotation
@@ -159,7 +165,7 @@ public class Ship {
 		
 		// Draw laser turret after laser
 		batch.begin();
-		batch.draw(laserTurret.getTextureRegion(), x + laserTurret.getX(), y + laserTurret.getY(), laserTurret.getTexWidth() / 2, laserTurret.getTexHeight() / 2, laserTurret.getTexWidth(), laserTurret.getTexHeight(), 1.0f, 1.0f, shipAngle-90);
+		batch.draw(laserTurret.getTextureRegion(), x + laserTurret.getX(), y + laserTurret.getY(), laserTurret.getTexWidth() / 2, laserTurret.getTexHeight() / 2, laserTurret.getTexWidth(), laserTurret.getTexHeight(), 1.0f, 1.0f, laserTurret.getAngle()-90);
 		batch.end();
 		
 		// Draw debug info last always
@@ -185,14 +191,23 @@ public class Ship {
 		y += dy;
 		
 		shipAngle += rotationalVelocity;
+		if (!firingLaser) laserTurret.addAngle(rotationalVelocity);
 		
 		checkOutOfBounds();
 		
 		hitBox.x = x + offX;
 		hitBox.y = y + offY;
 		
+		shipCentre = new Vector2(x + shipTexWidth / 2, y + shipTexHeight / 2);
+		
 		if (debugMode) {
-			debugString = "Speed: " + shipSpeed + "\nAngle: " + (int) shipAngle + "\nx: " + (int) x + "\ny: " + (int) y + "\nRotVel: " + (double) ((int) (rotationalVelocity*100)) / 100 + "º";
+			debugString = "Speed: " + shipSpeed;
+			debugString+= "\nAngle: " + (int) shipAngle; 
+			debugString+= "\nx: " + (int) x; 
+			debugString+= "\ny: " + (int) y;
+			debugString+= "\nRotVel: " + (double) ((int) (rotationalVelocity*100)) / 100 + "º"; 
+			debugString+= "\nFiring: " + firingLaser;
+			debugString+= "\nTarget: " + laserTarget.toString();
 		}
 		
 	}
@@ -217,6 +232,11 @@ public class Ship {
 		// Fires the ship's laser at the position
 		firingLaser = true;
 		laserTarget = new Vector2(pos.x, pos.y);
+		Vector2 laserVector = new Vector2(laserTarget);
+		laserVector.sub(shipCentre);
+		float a = radiansToDegrees(Math.atan(laserVector.y / laserVector.x));
+		if (laserTarget.x < shipCentre.x) a += 180;
+		laserTurret.setAngle(a);
 	}
 	
 	public void reset() {
@@ -242,6 +262,10 @@ public class Ship {
 	
 	private double degreesToRadians(float deg) {
 		return deg * Math.PI / 180;
+	}
+	
+	private float radiansToDegrees(double rad) {
+		return (float) (rad * 180 / Math.PI);
 	}
 	
 	
