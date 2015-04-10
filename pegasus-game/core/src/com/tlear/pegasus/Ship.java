@@ -115,9 +115,9 @@ public class Ship {
 	}
 	
 	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
-		// PRE: batch must have begun
+		
 		batch.begin();
-		batch.draw(shipTexture, x, y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle-90);
+		batch.draw(shipTextures.get(shipDirection), x, y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle-90);
 		if (debugMode) {
 			font.drawMultiLine(batch, debugString, 10, windowHeight-10);
 		}
