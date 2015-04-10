@@ -169,6 +169,12 @@ public class Ship {
 		}
 	}
 	
+	public void stopMoving() {
+		shipSpeed = 0;
+		rotationalVelocity = 0;
+		shipDirection = ShipDirection.NONE;
+	}
+	
 	public void dispose() {
 		font.dispose();
 	}
