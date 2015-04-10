@@ -23,9 +23,6 @@ public class Ship {
 	private HashMap<ShipDirection, Texture> shipImages;
 	private HashMap<ShipDirection, TextureRegion> shipTextures;
 	
-	private Texture shipTurretImage;
-	private TextureRegion shipTurretTexture;
-	
 	// Other textures
 	private BitmapFont font;
 	
@@ -43,6 +40,7 @@ public class Ship {
 	// Ship texture size
 	private int shipTexWidth;
 	private int shipTexHeight;
+
 	
 	// Ship model size
 	private int shipWidth;
@@ -59,6 +57,9 @@ public class Ship {
 	// Laser variables
 	private boolean firingLaser;
 	private Vector2 laserTarget;
+	
+	// Parts
+	private ShipLaser laserTurret;
 	
 	// Debug
 	private boolean debugMode;
@@ -81,10 +82,7 @@ public class Ship {
 		shipTextures.put(ShipDirection.BACKWARD, new TextureRegion(shipImages.get(ShipDirection.BACKWARD)));
 		shipTextures.put(ShipDirection.LEFT, new TextureRegion(shipImages.get(ShipDirection.LEFT)));
 		shipTextures.put(ShipDirection.RIGHT, new TextureRegion(shipImages.get(ShipDirection.RIGHT)));
-		
-		// Load turret
-		shipTurretImage = new Texture(Gdx.files.internal("shipLaserTurret.png"));
-		shipTurretTexture = new TextureRegion(shipTurretImage);
+	
 		
 		// Load other textures
 		font = new BitmapFont();
@@ -120,6 +118,11 @@ public class Ship {
 		hitBox.x = x + offX;
 		hitBox.y = y + offY;
 		
+		// Initialise parts
+		laserTurret = new ShipLaser(new Vector2(shipTexWidth / 2, shipTexHeight / 2));
+		
+		// Initialise window
+		
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		
@@ -141,7 +144,8 @@ public class Ship {
 		batch.begin();
 		// Draw ship
 		batch.draw(shipTextures.get(shipDirection), x, y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle-90);
-		
+		// Draw laser turret
+	
 		// Draw debug details
 		if (debugMode) {
 			font.drawMultiLine(batch, debugString, 10, windowHeight-10);
