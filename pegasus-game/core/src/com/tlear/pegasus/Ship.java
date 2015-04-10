@@ -23,6 +23,9 @@ public class Ship {
 	private HashMap<ShipDirection, Texture> shipImages;
 	private HashMap<ShipDirection, TextureRegion> shipTextures;
 	
+	private Texture shipTurretImage;
+	private TextureRegion shipTurretTexture;
+	
 	// Other textures
 	private BitmapFont font;
 	
@@ -78,6 +81,10 @@ public class Ship {
 		shipTextures.put(ShipDirection.BACKWARD, new TextureRegion(shipImages.get(ShipDirection.BACKWARD)));
 		shipTextures.put(ShipDirection.LEFT, new TextureRegion(shipImages.get(ShipDirection.LEFT)));
 		shipTextures.put(ShipDirection.RIGHT, new TextureRegion(shipImages.get(ShipDirection.RIGHT)));
+		
+		// Load turret
+		shipTurretImage = new Texture(Gdx.files.internal("shipLaserTurret.png"));
+		shipTurretTexture = new TextureRegion(shipTurretImage);
 		
 		// Load other textures
 		font = new BitmapFont();
