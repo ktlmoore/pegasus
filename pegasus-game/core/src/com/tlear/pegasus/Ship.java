@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.HashMap;
 
@@ -50,6 +52,10 @@ public class Ship {
 	// Hitbox offsets
 	private float offX;
 	private float offY;
+	
+	// Laser variables
+	private boolean firingLaser;
+	private Vector2 laserTarget;
 	
 	// Debug
 	private boolean debugMode;
@@ -114,6 +120,10 @@ public class Ship {
 		maxSpeed = 200;
 		maxRotationalVelocity = 2;
 		
+		// Initialise laser
+		firingLaser = false;
+		laserTarget = new Vector2();
+		
 		// Set debug mode
 		debugMode = true;
 		debugString = "";
@@ -122,16 +132,27 @@ public class Ship {
 	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		
 		batch.begin();
+		// Draw ship
 		batch.draw(shipTextures.get(shipDirection), x, y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle-90);
+		
+		// Draw debug details
 		if (debugMode) {
 			font.drawMultiLine(batch, debugString, 10, windowHeight-10);
 		}
 		batch.end();
 		
-		//Draw debug info
+		
 		shapeRenderer.begin(ShapeType.Line);
-		shapeRenderer.setColor(0, 1, 0, 1);
-		shapeRenderer.rect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
+		//Draw laser
+		if (firingLaser) {
+			shapeRenderer.setColor(1, 0, 0, 1);
+			shapeRenderer.line(new Vector2(x + shipTexWidth / 2, y + shipTexHeight / 2), laserTarget);
+		}
+		//Draw debug info
+		if (debugMode) {
+			shapeRenderer.setColor(0, 1, 0, 1);
+			shapeRenderer.rect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
+		}
 		shapeRenderer.end();
 
 		double dx = shipSpeed * Math.cos(degreesToRadians(shipAngle)) * Gdx.graphics.getDeltaTime();
@@ -165,8 +186,20 @@ public class Ship {
 			shipSpeed += s;
 			shipDirection = s > 0 ? ShipDirection.FORWARD : ShipDirection.BACKWARD;
 		} else {
-			shipDirection = ShipDirection.NONE;
+			shipDirection = shipDirection != ShipDirection.NONE ? shipDirection : ShipDirection.NONE;
 		}
+	}
+	
+	public void fire(Vector3 pos) {
+		// Fires the ship's laser at the position
+		firingLaser = true;
+		laserTarget = new Vector2(pos.x, pos.y);
+	}
+	
+	public void reset() {
+		// Set no direction and not firing
+		shipDirection = ShipDirection.NONE;
+		firingLaser = false;
 	}
 	
 	public void stopMoving() {

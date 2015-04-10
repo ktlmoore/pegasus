@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector3;
 
 public class Pegasus extends ApplicationAdapter {
 	
@@ -66,7 +67,7 @@ public class Pegasus extends ApplicationAdapter {
 		// Render the ship
 		ship.draw(batch, shapeRenderer);
 		
-		ship.setDirection(ShipDirection.NONE);
+		ship.reset();
 		// Checking for keyboard input
 		if (Gdx.input.isKeyPressed(Keys.A)) {
 			ship.addAngle(0.05f);
@@ -84,6 +85,12 @@ public class Pegasus extends ApplicationAdapter {
 			ship.stopMoving();
 		}
 		
+		if (Gdx.input.isTouched()) {
+			Vector3 touchPos = new Vector3();
+			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+			camera.unproject(touchPos);
+			ship.fire(touchPos);
+		}
 
 		
 		
