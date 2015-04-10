@@ -6,11 +6,9 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class Pegasus extends ApplicationAdapter {
 	
@@ -27,22 +25,19 @@ public class Pegasus extends ApplicationAdapter {
 	// Camera init
 	private OrthographicCamera camera;
 	
-	SpriteBatch batch;
+	private SpriteBatch batch;
+	private ShapeRenderer shapeRenderer;
 	
 	// Texture init
-	private Texture shipImage;
-	private TextureRegion shipTexture;
+
 	
 	// Model init
-	private Rectangle ship;
-	
-	// Movement model
-	private float shipAngle;
-	private double shipSpeed;
+	private Ship ship;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		shapeRenderer = new ShapeRenderer();
 		
 		font = new BitmapFont();
 		font.setColor(Color.RED);
@@ -51,20 +46,10 @@ public class Pegasus extends ApplicationAdapter {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, windowWidth, windowHeight);
 		
-		// Initialise textures
-		shipImage = new Texture(Gdx.files.internal("ship.png"));
-		shipTexture = new TextureRegion(shipImage);
 		
-		// Initialise model
-		ship = new Rectangle();
-		ship.width = 95;
-		ship.height = 108;
+		// Initialise ship
+		ship = new Ship(windowWidth, windowHeight);
 		
-		ship.x = 50;
-		ship.y = 50;
-		
-		shipAngle = 0;
-		shipSpeed = 0;
 	}
 
 	@Override
@@ -76,46 +61,21 @@ public class Pegasus extends ApplicationAdapter {
 		camera.update();
 		
 		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
+		shapeRenderer.setProjectionMatrix(camera.combined);
 		// Render the ship
-		batch.draw(shipTexture, ship.x, ship.y, ship.width / 2, ship.height / 2, ship.width, ship.height, 1.0f, 1.0f, shipAngle-90);
-		batch.end();
+		ship.draw(batch, shapeRenderer);
 		
 		// Checking for keyboard input
-		if (Gdx.input.isKeyPressed(Keys.A)) shipAngle += 1;
-		if (Gdx.input.isKeyPressed(Keys.D)) shipAngle -= 1;
-		if (Gdx.input.isKeyPressed(Keys.S)) shipSpeed -= 5;
-		if (Gdx.input.isKeyPressed(Keys.W)) shipSpeed += 5;
+		if (Gdx.input.isKeyPressed(Keys.A)) ship.addAngle(1);
+		if (Gdx.input.isKeyPressed(Keys.D)) ship.addAngle(-1);
+		if (Gdx.input.isKeyPressed(Keys.S)) ship.addSpeed(-5);
+		if (Gdx.input.isKeyPressed(Keys.W)) ship.addSpeed(5);
 		
-		System.out.println(shipSpeed);
-		//System.out.println("SHIPX: " + ship.x + ", SHIPY: " + ship.y);
+
 		
-		double dx = shipSpeed * Math.cos(degreesToRadians(shipAngle)) * Gdx.graphics.getDeltaTime();
-		double dy = shipSpeed * Math.sin(degreesToRadians(shipAngle)) * Gdx.graphics.getDeltaTime();
 		
-		ship.x += dx;
-		ship.y += dy;
-		
-		checkOutOfBounds();
 	}
-	
-	private void checkOutOfBounds() {
-		if (ship.x > windowWidth - ship.width/2) {
-			ship.x = -ship.width/2;
-		} else if (ship.x < -ship.width/2) {
-			ship.x = windowWidth - ship.width/2;
-		}
-		if (ship.y > windowHeight - ship.height/2) {
-			ship.y = -ship.height/2;
-		} else if (ship.y < -ship.height/2) {
-			ship.y = windowHeight - ship.height/2;
-		}
-	}
-	
-	private double degreesToRadians(float deg) {
-		return deg * Math.PI / 180;
-	}
-	
+
 	@Override
 	public void dispose() {
 		batch.dispose();
