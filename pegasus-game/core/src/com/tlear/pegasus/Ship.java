@@ -30,6 +30,9 @@ public class Ship {
 	
 	private ShipDirection shipDirection;
 	
+	// Constraints
+	private int maxSpeed;
+	
 	// Ship texture size
 	private int shipTexWidth;
 	private int shipTexHeight;
@@ -104,6 +107,9 @@ public class Ship {
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		
+		// Initialise constraints
+		maxSpeed = 200;
+		
 		// Set debug mode
 		debugMode = true;
 		debugString = "";
@@ -143,10 +149,16 @@ public class Ship {
 	
 	public void addAngle(int a) {
 		shipAngle += a;
+		shipDirection = a > 0 ? ShipDirection.LEFT : ShipDirection.RIGHT;
 	}
 	
 	public void addSpeed(int s) {
-		shipSpeed += s;
+		if (shipSpeed + s <= maxSpeed && shipSpeed + s >= -maxSpeed / 2) {
+			shipSpeed += s;
+			shipDirection = s > 0 ? ShipDirection.FORWARD : ShipDirection.BACKWARD;
+		} else {
+			shipDirection = ShipDirection.NONE;
+		}
 	}
 	
 	public void dispose() {
