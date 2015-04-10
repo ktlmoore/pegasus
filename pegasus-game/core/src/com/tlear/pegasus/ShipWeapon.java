@@ -8,9 +8,9 @@ public interface ShipWeapon {
 	public void setY(int y);
 	public void setAngle(int a);
 	
-	public void addX();
-	public void addY();
-	public void addAngle();
+	public void addX(int x);
+	public void addY(int y);
+	public void addAngle(int a);
 	
 	public int getX();
 	public int getY();
