@@ -11,9 +11,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-
-import java.util.HashSet;
 
 public class Pegasus extends ApplicationAdapter {
 	
@@ -96,24 +93,22 @@ public class Pegasus extends ApplicationAdapter {
 		double dx = shipSpeed * Math.cos(degreesToRadians(shipAngle)) * Gdx.graphics.getDeltaTime();
 		double dy = shipSpeed * Math.sin(degreesToRadians(shipAngle)) * Gdx.graphics.getDeltaTime();
 		
-		checkOutOfBounds();
-		
 		ship.x += dx;
 		ship.y += dy;
 		
-		
+		checkOutOfBounds();
 	}
 	
 	private void checkOutOfBounds() {
-		if (ship.x > windowWidth) {
-			ship.x = 0;
-		} else if (ship.x < 0) {
-			ship.x = windowWidth;
+		if (ship.x > windowWidth - ship.width/2) {
+			ship.x = -ship.width/2;
+		} else if (ship.x < -ship.width/2) {
+			ship.x = windowWidth - ship.width/2;
 		}
-		if (ship.y > windowHeight) {
-			ship.y = 0;
-		} else if (ship.y < 0) {
-			ship.y = windowHeight;
+		if (ship.y > windowHeight - ship.height/2) {
+			ship.y = -ship.height/2;
+		} else if (ship.y < -ship.height/2) {
+			ship.y = windowHeight - ship.height/2;
 		}
 	}
 	
