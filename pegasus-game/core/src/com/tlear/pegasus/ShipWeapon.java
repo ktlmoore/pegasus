@@ -14,4 +14,6 @@ public interface ShipWeapon {
 	public int getY();
 	public int getAngle();
 	
+	public TextureRegion getTextureRegion();
+	
 }
