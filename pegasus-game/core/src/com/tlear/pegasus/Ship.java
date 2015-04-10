@@ -26,6 +26,8 @@ public class Ship {
 	private float shipAngle;
 	private float shipSpeed;
 	
+	private ShipDirection shipDirection;
+	
 	// Ship texture size
 	private int shipTexWidth;
 	private int shipTexHeight;
@@ -59,6 +61,8 @@ public class Ship {
 		// Initialise speed and rotation
 		shipSpeed = 0f;
 		shipAngle = 0f;
+		
+		shipDirection = ShipDirection.NONE;
 		
 		// Initialise position
 		x = 50;
@@ -132,6 +136,10 @@ public class Ship {
 	
 	public void dispose() {
 		font.dispose();
+	}
+	
+	public void setDirection(ShipDirection d) {
+		shipDirection = d;
 	}
 	
 	
