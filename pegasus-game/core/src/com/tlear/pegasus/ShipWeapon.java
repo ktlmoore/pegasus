@@ -17,6 +17,8 @@ public interface ShipWeapon {
 	public int getAngle();
 	public int getWidth();
 	public int getHeight();
+	public int getTexWidth();
+	public int getTexHeight();
 	
 	public TextureRegion getTextureRegion();
 	
