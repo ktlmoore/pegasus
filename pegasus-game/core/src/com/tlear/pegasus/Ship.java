@@ -165,12 +165,17 @@ public class Ship {
 			shapeRenderer.rect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
 		}
 		shapeRenderer.end();
+		
+		// Move the ship
 
 		double dx = shipSpeed * Math.cos(degreesToRadians(shipAngle)) * Gdx.graphics.getDeltaTime();
 		double dy = shipSpeed * Math.sin(degreesToRadians(shipAngle)) * Gdx.graphics.getDeltaTime();
 		
 		x += dx;
 		y += dy;
+		
+		laserTurret.addX(dx);
+		laserTurret.addY(dy);
 		
 		shipAngle += rotationalVelocity;
 		

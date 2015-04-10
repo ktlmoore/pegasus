@@ -13,8 +13,8 @@ public class ShipLaser implements ShipWeapon {
 	private int laserTexHeight;
 
 	// Model
-	private int x;
-	private int y;
+	private double x;
+	private double y;
 	
 	private int width;
 	private int height;
@@ -45,35 +45,35 @@ public class ShipLaser implements ShipWeapon {
 	}
 	
 	// Setters, adders, getters
-	public void setX(int x) {
+	public void setX(double x) {
 		this.x = x;
 	}
 
-	public void setY(int y) {
+	public void setY(double y) {
 		this.y = y;
 	}
 
-	public void setAngle(int a) {
+	public void setAngle(float a) {
 		this.angle = a;
 	}
 
-	public void addX(int x) {
+	public void addX(double x) {
 		this.x += x;
 	}
 
-	public void addY(int y) {
+	public void addY(double y) {
 		this.y += y;
 	}
 
-	public void addAngle(int a) {
+	public void addAngle(float a) {
 		this.angle += a;
 	}
 
-	public int getX() {
+	public double getX() {
 		return x;
 	}
 
-	public int getY() {
+	public double getY() {
 		return y;
 	}
 
