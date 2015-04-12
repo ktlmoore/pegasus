@@ -199,7 +199,8 @@ public class Ship {
 			shapeRenderer.setColor(0, 1, 0, 1);
 			shapeRenderer.rect(hitBox.disp.x, hitBox.disp.y, hitBox.width, hitBox.height);
 			
-			// Draw every part's hitbox
+			// Draw every part's hitbox in blue
+			shapeRenderer.setColor(0, 0.5f, 1, 1);
 			for (Entry<PartType, Set<ShipPart>> entry : parts.entrySet()) {
 				for (ShipPart p : entry.getValue()) {
 					shapeRenderer.rect(disp.x + p.getHitbox().disp.x, disp.y + p.getHitbox().disp.y, p.getHitbox().width, p.getHitbox().height);
