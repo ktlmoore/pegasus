@@ -208,6 +208,7 @@ public class Ship {
 			debugString+= "\nRotVel: " + (double) ((int) (rotationalVelocity*100)) / 100 + "º"; 
 			debugString+= "\nFiring: " + firingLaser;
 			debugString+= "\nTarget: " + laserTarget.toString();
+			debugString+= "\nTurret Angle: " + laserTurret.getAngle();
 		}
 		
 	}
