@@ -204,7 +204,7 @@ public class Ship {
 		y += dy;
 		
 		shipAngle += rotationalVelocity;
-		laserTurret.setDispAngle(laserTurret.getDispAngle() + rotationalVelocity);
+		if (!firingLaser) laserTurret.setDispAngle(laserTurret.getDispAngle() + rotationalVelocity);
 		
 		checkOutOfBounds();
 		
