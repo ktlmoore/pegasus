@@ -151,7 +151,7 @@ public class Ship {
 		
 		batch.begin();
 		// Draw ship
-		batch.draw(shipTextures.get(shipDirection), x, y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle-90);
+		batch.draw(shipTextures.get(shipDirection), x, y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle);
 		batch.end();
 		
 		
@@ -165,7 +165,7 @@ public class Ship {
 		
 		// Draw laser turret after laser
 		batch.begin();
-		batch.draw(laserTurret.getTextureRegion(), x + laserTurret.getX(), y + laserTurret.getY(), laserTurret.getTexWidth() / 2, laserTurret.getTexHeight() / 2, laserTurret.getTexWidth(), laserTurret.getTexHeight(), 1.0f, 1.0f, laserTurret.getAngle()-90);
+		batch.draw(laserTurret.getTextureRegion(), x + laserTurret.getX(), y + laserTurret.getY(), laserTurret.getTexWidth() / 2, laserTurret.getTexHeight() / 2, laserTurret.getTexWidth(), laserTurret.getTexHeight(), 1.0f, 1.0f, laserTurret.getAngle());
 		batch.end();
 		
 		// Draw debug info last always
@@ -184,8 +184,8 @@ public class Ship {
 		
 		// Move the ship
 
-		double dx = shipSpeed * Math.cos(degreesToRadians(shipAngle)) * Gdx.graphics.getDeltaTime();
-		double dy = shipSpeed * Math.sin(degreesToRadians(shipAngle)) * Gdx.graphics.getDeltaTime();
+		double dx = shipSpeed * Math.cos(degreesToRadians(shipAngle+90)) * Gdx.graphics.getDeltaTime();
+		double dy = shipSpeed * Math.sin(degreesToRadians(shipAngle+90)) * Gdx.graphics.getDeltaTime();
 		
 		x += dx;
 		y += dy;
@@ -234,7 +234,7 @@ public class Ship {
 		laserTarget = new Vector2(pos.x, pos.y);
 		Vector2 laserVector = new Vector2(laserTarget);
 		laserVector.sub(shipCentre);
-		float a = radiansToDegrees(Math.atan(laserVector.y / laserVector.x));
+		float a = radiansToDegrees(Math.atan(laserVector.y / laserVector.x)) - 90;
 		if (laserTarget.x < shipCentre.x) a += 180;
 		laserTurret.setAngle(a);
 	}
