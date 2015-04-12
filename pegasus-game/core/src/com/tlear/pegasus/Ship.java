@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.tlear.pegasus.shipParts.ShipLaser;
 
 import java.util.HashMap;
 
@@ -20,8 +21,7 @@ public class Ship {
 	private float y;
 	
 	// Ship display position
-	private float dispX;
-	private float dispY;
+	private Vector2 disp;
 	
 	// Ship textures
 	private HashMap<ShipDirection, Texture> shipImages;
@@ -115,27 +115,23 @@ public class Ship {
 		y = windowHeight / 2 - shipTexHeight / 2;
 		
 		// Initialise display position - centre of screen for Pegasus
-		dispX = x;
-		dispY = y;
+		disp = new Vector2(x, y);
 		
 		shipCentre = new Vector2(x + shipTexWidth / 2, y + shipTexHeight / 2);
 		
 		// Initialise the hitbox to always be contained inside the ship's texture
 		// regardless of the rotation
-		hitBox = new Hitbox();
-		hitBox.width = hitBox.height = (float) Math.sqrt((Math.pow((double) shipWidth, 2.0) / 2.0));
+		
+		float hitBoxWidth = (float) Math.sqrt((Math.pow((double) shipWidth, 2.0) / 2.0));
+		hitBox = new Hitbox(x, y, hitBoxWidth, hitBoxWidth);
 		offX = (shipTexWidth / 2) - (hitBox.width / 2);
 		offY = (shipTexHeight / 2) - (hitBox.height / 2);
 		
-		hitBox.x = x + offX;
-		hitBox.y = y + offY;
-		hitBox.dispX = hitBox.x;
-		hitBox.dispY = hitBox.y;
+		hitBox.disp.x = hitBox.x + offX;
+		hitBox.disp.y = hitBox.y + offY;
 		
 		// Initialise parts
 		laserTurret = new ShipLaser(new Vector2(shipTexWidth / 2, shipTexHeight / 2));
-		laserTurret.addX(-laserTurret.getTexWidth() / 2);
-		laserTurret.addY(-laserTurret.getTexHeight() / 2);
 		
 		// Initialise window
 		
@@ -161,7 +157,7 @@ public class Ship {
 		
 		batch.begin();
 		// Draw ship
-		batch.draw(shipTextures.get(shipDirection), dispX, dispY, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle);
+		batch.draw(shipTextures.get(shipDirection), disp.x, disp.y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle);
 		batch.end();
 		
 		
@@ -169,13 +165,19 @@ public class Ship {
 		//Draw laser
 		if (firingLaser) {
 			shapeRenderer.setColor(1, 0, 0, 1);
-			shapeRenderer.line(new Vector2(x + shipTexWidth / 2, y + shipTexHeight / 2), laserTarget);
+			
+			// Calculate where to fire laser from
+			Vector2 tmp = new Vector2(disp);
+			tmp.add(laserTurret.getFiringOrigin());
+			shapeRenderer.line(tmp, laserTarget);
 		}
 		shapeRenderer.end();
 		
 		// Draw laser turret after laser
 		batch.begin();
-		batch.draw(laserTurret.getTextureRegion(), dispX + laserTurret.getX(), dispY + laserTurret.getY(), laserTurret.getTexWidth() / 2, laserTurret.getTexHeight() / 2, laserTurret.getTexWidth(), laserTurret.getTexHeight(), 1.0f, 1.0f, laserTurret.getAngle());
+	
+		batch.draw(laserTurret.getTextureRegion(), disp.x + laserTurret.getDisp().x, disp.y + laserTurret.getDisp().y, laserTurret.getTexWidth() / 2, laserTurret.getTexHeight() / 2, laserTurret.getTexWidth(), laserTurret.getTexHeight(), 1.0f, 1.0f, laserTurret.getDispAngle());
+		
 		batch.end();
 		
 		// Draw debug info last always
@@ -183,7 +185,8 @@ public class Ship {
 			//Draw debug info
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(0, 1, 0, 1);
-			shapeRenderer.rect(hitBox.dispX, hitBox.dispY, hitBox.width, hitBox.height);
+			shapeRenderer.rect(hitBox.disp.x, hitBox.disp.y, hitBox.width, hitBox.height);
+			shapeRenderer.rect(disp.x + laserTurret.getHitbox().disp.x, disp.y + laserTurret.getHitbox().disp.y,laserTurret.getHitbox().width, laserTurret.getHitbox().height);
 			shapeRenderer.end();
 			
 			batch.begin();
@@ -201,7 +204,7 @@ public class Ship {
 		y += dy;
 		
 		shipAngle += rotationalVelocity;
-		if (!firingLaser) laserTurret.addAngle(rotationalVelocity);
+		laserTurret.setDispAngle(laserTurret.getDispAngle() + rotationalVelocity);
 		
 		checkOutOfBounds();
 		
