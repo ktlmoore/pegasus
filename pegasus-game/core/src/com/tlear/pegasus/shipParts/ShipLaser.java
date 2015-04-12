@@ -18,6 +18,9 @@ public class ShipLaser extends ShipWeapon {
 
 	// Model
 	
+	private boolean firing;
+	private Vector2 target;
+	
 	public ShipLaser(Vector2 location) {
 		super(location);
 		
@@ -35,6 +38,10 @@ public class ShipLaser extends ShipWeapon {
 		
 		disp = new Vector2(hitbox.disp);
 		dispAngle = 0;
+		
+		firing = false;
+		
+		target = new Vector2();
 	}
 	
 	@Override
@@ -75,6 +82,36 @@ public class ShipLaser extends ShipWeapon {
 	// Give centre of laser as origin of laser beam
 	public Vector2 getDispFiringOrigin() {
 		return new Vector2(x, y);
+	}
+	
+	/* Laser only */
+	// A method to say imma firin mah lazor
+	public void fireAt(Vector2 target) {
+		this.target = new Vector2(target);
+		firing = true;
+		
+		// Fire at the target
+		Vector2 laserVector = new Vector2(target);
+		laserVector.sub(new Vector2(disp.x + laserTexWidth/2, disp.y + laserTexHeight/2));
+		float a = radiansToDegrees(Math.atan(laserVector.y / laserVector.x)) - 90;
+		if (target.x < disp.x + laserTexWidth/2) a += 180;
+		setAngle(a);
+	}
+	// A method to say if imma firin mah lazor
+	public boolean isFiring() {
+		return firing;
+	}
+	// A method to say I stop firing my laser
+	public void notFiring() {
+		firing = false;
+	}
+	// A method to say where imma firin mah lazor at
+	public Vector2 getTarget() {
+		return new Vector2(target);
+	}
+	
+	private float radiansToDegrees(double rad) {
+		return (float) (rad * 180 / Math.PI);
 	}
 
 }

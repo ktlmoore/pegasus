@@ -10,9 +10,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.tlear.pegasus.shipParts.PartType;
 import com.tlear.pegasus.shipParts.ShipLaser;
+import com.tlear.pegasus.shipParts.ShipPart;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class Ship {
 	private Hitbox hitBox;
@@ -50,8 +56,6 @@ public class Ship {
 	private int shipWidth;
 	private int shipHeight;
 	
-	private Vector2 shipCentre;
-	
 	// Stage size
 	private int windowWidth;
 	private int windowHeight;
@@ -60,12 +64,11 @@ public class Ship {
 	private float offX;
 	private float offY;
 	
-	// Laser variables
-	private boolean firingLaser;
-	private Vector2 laserTarget;
-	
 	// Parts
-	private ShipLaser laserTurret;
+	private Map<PartType, Set<ShipPart>> parts;
+	
+	// Laser target is where mouse was last
+	private Vector2 laserTarget;
 	
 	// Debug
 	private boolean debugMode;
@@ -117,8 +120,6 @@ public class Ship {
 		// Initialise display position - centre of screen for Pegasus
 		disp = new Vector2(x, y);
 		
-		shipCentre = new Vector2(x + shipTexWidth / 2, y + shipTexHeight / 2);
-		
 		// Initialise the hitbox to always be contained inside the ship's texture
 		// regardless of the rotation
 		
@@ -131,7 +132,13 @@ public class Ship {
 		hitBox.disp.y = hitBox.y + offY;
 		
 		// Initialise parts
-		laserTurret = new ShipLaser(new Vector2(shipTexWidth / 2, shipTexHeight / 2));
+		parts = new HashMap<PartType, Set<ShipPart>>();
+		HashSet<ShipPart> lasers = new HashSet<ShipPart>();
+		lasers.add(new ShipLaser(new Vector2(shipTexWidth / 2, shipTexHeight / 2)));	// Have a standard laser cannon
+		
+		parts.put(PartType.LASER, lasers);
+		
+		laserTarget = new Vector2();
 		
 		// Initialise window
 		
@@ -141,10 +148,6 @@ public class Ship {
 		// Initialise constraints
 		maxSpeed = 200;
 		maxRotationalVelocity = 2;
-		
-		// Initialise laser
-		firingLaser = false;
-		laserTarget = new Vector2();
 		
 		// Set debug mode
 		debugMode = true;
@@ -162,21 +165,30 @@ public class Ship {
 		
 		
 		shapeRenderer.begin(ShapeType.Line);
-		//Draw laser
-		if (firingLaser) {
-			shapeRenderer.setColor(1, 0, 0, 1);
-			
-			// Calculate where to fire laser from
-			Vector2 tmp = new Vector2(disp);
-			tmp.add(laserTurret.getFiringOrigin());
-			shapeRenderer.line(tmp, laserTarget);
+		//Draw lasers
+		HashSet<ShipPart> shipLasers = new HashSet<ShipPart>(parts.get(PartType.LASER));
+		for (ShipPart p : shipLasers) {
+			// Convert each part into laser - safe
+			ShipLaser l = (ShipLaser) p;
+			if (l.isFiring()) {
+				shapeRenderer.setColor(1, 0, 0, 1);
+				
+				// Calculate where to fire laser from
+				Vector2 tmp = new Vector2(disp);
+				tmp.add(l.getFiringOrigin());
+				shapeRenderer.line(tmp, laserTarget);
+			}
 		}
 		shapeRenderer.end();
 		
-		// Draw laser turret after laser
+		// Draw all laser parts after lasers
 		batch.begin();
-	
-		batch.draw(laserTurret.getTextureRegion(), disp.x + laserTurret.getDisp().x, disp.y + laserTurret.getDisp().y, laserTurret.getTexWidth() / 2, laserTurret.getTexHeight() / 2, laserTurret.getTexWidth(), laserTurret.getTexHeight(), 1.0f, 1.0f, laserTurret.getDispAngle());
+		for (ShipPart p : shipLasers) {
+			// Convert each part into a laser again - safe
+			ShipLaser l = (ShipLaser) p;
+			batch.draw(l.getTextureRegion(), disp.x + l.getDisp().x, disp.y + l.getDisp().y, l.getTexWidth() / 2, l.getTexHeight() / 2, l.getTexWidth(), l.getTexHeight(), 1.0f, 1.0f, l.getDispAngle());
+		}
+		
 		
 		batch.end();
 		
@@ -186,7 +198,13 @@ public class Ship {
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(0, 1, 0, 1);
 			shapeRenderer.rect(hitBox.disp.x, hitBox.disp.y, hitBox.width, hitBox.height);
-			shapeRenderer.rect(disp.x + laserTurret.getHitbox().disp.x, disp.y + laserTurret.getHitbox().disp.y,laserTurret.getHitbox().width, laserTurret.getHitbox().height);
+			
+			// Draw every part's hitbox
+			for (Entry<PartType, Set<ShipPart>> entry : parts.entrySet()) {
+				for (ShipPart p : entry.getValue()) {
+					shapeRenderer.rect(disp.x + p.getHitbox().disp.x, disp.y + p.getHitbox().disp.y, p.getHitbox().width, p.getHitbox().height);
+				}
+			}
 			shapeRenderer.end();
 			
 			batch.begin();
@@ -194,6 +212,11 @@ public class Ship {
 			batch.end();
 		}
 		
+		
+		/* Check for weapon resets */
+		for (ShipPart p : parts.get(PartType.LASER)) {
+			((ShipLaser) p).notFiring();
+		}
 		
 		// Move the ship
 
@@ -204,14 +227,18 @@ public class Ship {
 		y += dy;
 		
 		shipAngle += rotationalVelocity;
-		if (!firingLaser) laserTurret.setDispAngle(laserTurret.getDispAngle() + rotationalVelocity);
+		// Rotate all the parts
+		for (Entry<PartType, Set<ShipPart>> entry : parts.entrySet()) {
+			for (ShipPart p : entry.getValue()) {
+				p.setDispAngle(p.getDispAngle() + rotationalVelocity);
+			}
+		}
 		
 		checkOutOfBounds();
 		
 		hitBox.x = x + offX;
 		hitBox.y = y + offY;
-		
-		shipCentre = new Vector2(x + shipTexWidth / 2, y + shipTexHeight / 2);
+	
 		
 		if (debugMode) {
 			debugString = "Speed: " + shipSpeed;
@@ -219,9 +246,7 @@ public class Ship {
 			debugString+= "\nx: " + (int) x; 
 			debugString+= "\ny: " + (int) y;
 			debugString+= "\nRotVel: " + (double) ((int) (rotationalVelocity*100)) / 100 + "º"; 
-			debugString+= "\nFiring: " + firingLaser;
-			debugString+= "\nTarget: " + laserTarget.toString();
-			debugString+= "\nTurret Angle: " + laserTurret.getAngle();
+			debugString+= "\nLaserTarget: " + laserTarget.toString();
 		}
 		
 	}
@@ -242,21 +267,28 @@ public class Ship {
 		}
 	}
 	
-	public void fire(Vector3 pos) {
+	public void fireLasers(Vector3 pos) {
 		// Fires the ship's laser at the position
-		firingLaser = true;
+		
 		laserTarget = new Vector2(pos.x, pos.y);
-		Vector2 laserVector = new Vector2(laserTarget);
-		laserVector.sub(shipCentre);
-		float a = radiansToDegrees(Math.atan(laserVector.y / laserVector.x)) - 90;
-		if (laserTarget.x < shipCentre.x) a += 180;
-		laserTurret.setAngle(a);
+		
+		// First, get the lasers
+		HashSet<ShipPart> shipLasers = new HashSet<ShipPart>(parts.get(PartType.LASER));
+		for (ShipPart p : shipLasers) {
+			
+			// Convert each ship part to laser - safe because we only add lasers to the LASER in map
+			ShipLaser l = (ShipLaser) p;
+			
+			// Fire each laser at the target 
+			l.fireAt(new Vector2(pos.x - disp.x, pos.y - disp.y));
+		}
+		
+		
 	}
 	
 	public void reset() {
-		// Set no direction and not firing
+		// Set no direction
 		shipDirection = ShipDirection.NONE;
-		firingLaser = false;
 	}
 	
 	public void stopMoving() {
@@ -274,13 +306,7 @@ public class Ship {
 	}
 	
 	
-	private double degreesToRadians(float deg) {
-		return deg * Math.PI / 180;
-	}
-	
-	private float radiansToDegrees(double rad) {
-		return (float) (rad * 180 / Math.PI);
-	}
+
 	
 	
 	private void checkOutOfBounds() {
@@ -296,5 +322,11 @@ public class Ship {
 		}
 	}
 
+	
+	/* MATHS */
+	private double degreesToRadians(float deg) {
+		return deg * Math.PI / 180;
+	}
+	
 	
 }
