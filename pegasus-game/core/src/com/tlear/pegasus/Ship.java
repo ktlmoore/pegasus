@@ -98,12 +98,6 @@ public class Ship {
 		
 		shipDirection = ShipDirection.NONE;
 		
-		// Initialise position
-		x = 50;
-		y = 50;
-		
-		
-		
 		// Initialise ship texture size
 		shipTexWidth = 95;
 		shipTexHeight = 108;
@@ -111,6 +105,10 @@ public class Ship {
 		// Initalise the ship model size
 		shipWidth = 60;
 		shipHeight = 100;
+		
+		// Initialise position
+		x = windowWidth / 2 - shipTexWidth / 2;
+		y = windowHeight / 2 - shipTexHeight / 2;
 		
 		shipCentre = new Vector2(x + shipTexWidth / 2, y + shipTexHeight / 2);
 		
@@ -145,6 +143,8 @@ public class Ship {
 		// Set debug mode
 		debugMode = true;
 		debugString = "";
+		
+		
 	}
 	
 	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
