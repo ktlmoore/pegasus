@@ -76,7 +76,7 @@ public class BasicEngine extends ShipEngine implements ShipPart {
 
 	@Override
 	public void setDispAngle(float a) {
-		dispAngle = a;
+		angle = dispAngle = a;
 	}
 
 	@Override
