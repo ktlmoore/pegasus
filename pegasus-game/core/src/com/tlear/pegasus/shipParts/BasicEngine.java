@@ -9,7 +9,11 @@ public class BasicEngine extends ShipEngine implements ShipPart {
 
 	/* Texture */
 	private Texture img;
+	private Texture imgFwd;
+	private Texture imgBwd;
 	private TextureRegion tex;
+	private TextureRegion texFwd;
+	private TextureRegion texBwd;
 	
 	private float texWidth;
 	private float texHeight;
@@ -17,18 +21,24 @@ public class BasicEngine extends ShipEngine implements ShipPart {
 	private Vector2 disp;
 	private float dispAngle;
 	
+	
+	
 	public BasicEngine(Vector2 pos) {
 		super(pos);
 		
 		img = new Texture(Gdx.files.internal("basicEngine.png"));
+		imgFwd = new Texture(Gdx.files.internal("basicEngineForward.png"));
+		imgBwd = new Texture(Gdx.files.internal("basicEngineBackward.png"));
 		tex = new TextureRegion(img);
+		texFwd = new TextureRegion(imgFwd);
+		texBwd = new TextureRegion(imgBwd);
 		
 		// Set max speed and thrust!
 		maxSpeed = 200;
 		thrust = 5;
 		
 		texWidth = 15;
-		texHeight = 39;
+		texHeight = 69;
 		
 		dispAngle = angle;
 		
@@ -37,7 +47,16 @@ public class BasicEngine extends ShipEngine implements ShipPart {
 	}
 	@Override
 	public TextureRegion getTextureRegion() {
-		return tex;
+		switch (thrustDirection) {
+		case -1:
+			return texBwd;
+		case 0:
+			return tex;
+		case 1:
+			return texFwd;
+		default:
+			throw new Error("Invalid Texture in basicEngine");
+		}
 	}
 
 	@Override

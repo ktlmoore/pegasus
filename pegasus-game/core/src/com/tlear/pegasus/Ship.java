@@ -32,8 +32,10 @@ public class Ship {
 	private Vector2 disp;
 	
 	// Ship textures
-	private HashMap<ShipDirection, Texture> shipImages;
-	private HashMap<ShipDirection, TextureRegion> shipTextures;
+	private Texture hullImg;
+	private TextureRegion hullTex;
+	//private HashMap<ShipDirection, Texture> shipImages;
+	//private HashMap<ShipDirection, TextureRegion> shipTextures;
 	
 	// Other textures
 	private BitmapFont font;
@@ -41,7 +43,6 @@ public class Ship {
 	// Ship movement model
 	private float shipAngle;
 	
-	private ShipDirection shipDirection;
 	public float rotationalVelocity;
 	
 	// Constraints
@@ -77,7 +78,11 @@ public class Ship {
 	public Ship(int windowWidth, int windowHeight) {
 		/* Load textures */
 		
+		hullImg = new Texture(Gdx.files.internal("ship.png"));
+		hullTex = new TextureRegion(hullImg);
+		
 		// Set up maps of directions
+		/* DEPRECATED DEPRECATED DEPRECATED
 		shipImages = new HashMap<ShipDirection, Texture>();
 		shipImages.put(ShipDirection.NONE, new Texture(Gdx.files.internal("ship.png")));
 		shipImages.put(ShipDirection.FORWARD, new Texture(Gdx.files.internal("shipForward.png")));
@@ -91,7 +96,7 @@ public class Ship {
 		shipTextures.put(ShipDirection.BACKWARD, new TextureRegion(shipImages.get(ShipDirection.BACKWARD)));
 		shipTextures.put(ShipDirection.LEFT, new TextureRegion(shipImages.get(ShipDirection.LEFT)));
 		shipTextures.put(ShipDirection.RIGHT, new TextureRegion(shipImages.get(ShipDirection.RIGHT)));
-	
+		*/
 		
 		// Load other textures
 		font = new BitmapFont();
@@ -102,7 +107,8 @@ public class Ship {
 		shipAngle = 0f;
 		rotationalVelocity = 0f;
 		
-		shipDirection = ShipDirection.NONE;
+		
+		//shipDirection = ShipDirection.NONE;
 		
 		// Initialise ship texture size
 		shipTexWidth = 95;
@@ -162,7 +168,7 @@ public class Ship {
 		
 		batch.begin();
 		// Draw ship
-		batch.draw(shipTextures.get(shipDirection), disp.x, disp.y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle);
+		batch.draw(hullTex, disp.x, disp.y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle);
 		
 		// Draw engines
 		for (ShipPart p : parts.get(PartType.ENGINE)) {
@@ -227,6 +233,11 @@ public class Ship {
 			((ShipLaser) p).notFiring();
 		}
 		
+		/* Reset engine thrust direction */
+		for (ShipPart p : parts.get(PartType.ENGINE)) {
+			((ShipEngine) p).resetThrustDirection();
+		}
+		
 		/* Move the ship */
 		// Sum the velocities of the engines!
 		Vector2 d = new Vector2(0, 0);
@@ -268,7 +279,7 @@ public class Ship {
 	public void addAngle(float a) {
 		if (Math.abs(rotationalVelocity + a) <= maxRotationalVelocity) {
 			rotationalVelocity += a;
-			shipDirection = a > 0 ? ShipDirection.LEFT : ShipDirection.RIGHT;
+			//shipDirection = a > 0 ? ShipDirection.LEFT : ShipDirection.RIGHT;
 		}
 	}
 	
@@ -276,14 +287,14 @@ public class Ship {
 		for (ShipPart p : parts.get(PartType.ENGINE)) {
 			((ShipEngine) p).increaseThrust();
 		}
-		shipDirection = ShipDirection.FORWARD;
+		//shipDirection = ShipDirection.FORWARD;
 	}
 
 	public void reduceSpeed() {
 		for (ShipPart p : parts.get(PartType.ENGINE)) {
 			((ShipEngine) p).decreaseThrust();
 		}
-		shipDirection = ShipDirection.BACKWARD;
+		//shipDirection = ShipDirection.BACKWARD;
 	}
 	
 	public void fireLasers(Vector3 pos) {
@@ -307,7 +318,7 @@ public class Ship {
 	
 	public void reset() {
 		// Set no direction
-		shipDirection = ShipDirection.NONE;
+		//shipDirection = ShipDirection.NONE;
 	}
 	
 	public void stopMoving() {
@@ -315,17 +326,18 @@ public class Ship {
 			((ShipEngine) p).zero();
 		}
 		rotationalVelocity = 0;
-		shipDirection = ShipDirection.NONE;
+		//shipDirection = ShipDirection.NONE;
 	}
 	
 	public void dispose() {
 		font.dispose();
 	}
 	
+	/*
 	public void setDirection(ShipDirection d) {
 		shipDirection = d;
 	}
-	
+	*/
 	
 
 	

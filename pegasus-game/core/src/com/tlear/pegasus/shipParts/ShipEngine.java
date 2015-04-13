@@ -16,6 +16,8 @@ public abstract class ShipEngine implements ShipPart {
 	
 	protected Hitbox hitbox;
 	
+	protected int thrustDirection;	// -1, 0, 1 for BACK, NONE, FWD
+	
 	public ShipEngine(Vector2 pos) {
 		x = pos.x;
 		y = pos.y;
@@ -24,6 +26,7 @@ public abstract class ShipEngine implements ShipPart {
 		velocity = new Vector2(0, 0);
 		thrust = 0;
 		hitbox = new Hitbox(x, y, 0, 0);
+		thrustDirection = 0;
 	}
 	
 	/* Textures */
@@ -74,12 +77,18 @@ public abstract class ShipEngine implements ShipPart {
 	}
 	public void increaseThrust() {
 		thrust(1);
+		thrustDirection = 1;
 	}
 	public void decreaseThrust() {
 		thrust(-1);
+		thrustDirection = -1;
+	}
+	public void resetThrustDirection() {
+		thrustDirection = 0;
 	}
 	public void zero() {
 		velocity = new Vector2(0, 0);
+		thrustDirection = 0;
 	}
 	
 	// Getters
