@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.tlear.pegasus.Hitbox;
 
 public class BasicEngine extends ShipEngine implements ShipPart {
 
@@ -43,6 +44,14 @@ public class BasicEngine extends ShipEngine implements ShipPart {
 		dispAngle = angle;
 		
 		disp = new Vector2(x - texWidth / 2, y - texHeight / 2);
+		
+		float hitBoxWidth = (float) Math.sqrt((Math.pow((double) texWidth, 2.0) / 2.0));
+		hitbox = new Hitbox(x, y-15, 15, 39);
+		float offX = (texWidth / 2) - (hitbox.width / 2);
+		float offY = (texHeight / 2) - (hitbox.height / 2);
+		
+		//hitbox.disp.x = //hitbox.x + offX;
+		//hitbox.disp.y = //hitbox.y + offY;
 		
 	}
 	@Override

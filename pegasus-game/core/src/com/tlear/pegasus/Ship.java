@@ -187,6 +187,7 @@ public class Ship {
 			ShipLaser l = (ShipLaser) p;
 			if (l.isFiring()) {
 				shapeRenderer.setColor(1, 0, 0, 1);
+				shapeRenderer.identity();
 				
 				// Calculate where to fire laser from
 				Vector2 tmp = new Vector2(disp);
@@ -211,14 +212,17 @@ public class Ship {
 		if (debugMode) {
 			//Draw debug info
 			shapeRenderer.begin(ShapeType.Line);
+			shapeRenderer.identity();
 			shapeRenderer.setColor(0, 1, 0, 1);
-			shapeRenderer.rect(hitBox.disp.x, hitBox.disp.y, hitBox.width, hitBox.height);
+			shapeRenderer.translate(disp.x + shipTexWidth/2, disp.y + shipTexHeight/2, 0);
+			shapeRenderer.rotate(0f, 0f, 1.0f, shipAngle);
+			shapeRenderer.rect(-hitBox.width/2, -hitBox.height/2, hitBox.width, hitBox.height);
 			
 			// Draw every part's hitbox in blue
 			shapeRenderer.setColor(0, 0.5f, 1, 1);
 			for (Entry<PartType, Set<ShipPart>> entry : parts.entrySet()) {
 				for (ShipPart p : entry.getValue()) {
-					shapeRenderer.rect(disp.x + p.getHitbox().disp.x, disp.y + p.getHitbox().disp.y, p.getHitbox().width, p.getHitbox().height);
+					shapeRenderer.rect(p.getHitbox().disp.x - shipTexWidth/2, p.getHitbox().disp.y - shipTexHeight/2, p.getHitbox().width, p.getHitbox().height);
 				}
 			}
 			shapeRenderer.end();
