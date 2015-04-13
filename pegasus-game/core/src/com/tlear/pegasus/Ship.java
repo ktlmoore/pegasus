@@ -143,6 +143,7 @@ public class Ship {
 		// Engines
 		HashSet<ShipPart> engines = new HashSet<ShipPart>();
 		engines.add(new BasicEngine(new Vector2(20, shipTexHeight - 78)));
+		engines.add(new BasicEngine(new Vector2(shipTexWidth - 20, shipTexHeight - 78)));
 		
 		parts.put(PartType.LASER, lasers);
 		parts.put(PartType.ENGINE, engines);
