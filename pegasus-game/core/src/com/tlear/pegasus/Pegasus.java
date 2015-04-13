@@ -31,7 +31,7 @@ public class Pegasus extends ApplicationAdapter {
 	private ShapeRenderer shapeRenderer;
 	
 	// Texture init
-
+	private Background background;
 	
 	// Model init
 	private Ship ship;
@@ -43,6 +43,8 @@ public class Pegasus extends ApplicationAdapter {
 		
 		font = new BitmapFont();
 		font.setColor(Color.RED);
+		
+		background = new Background(windowWidth, windowHeight);
 		
 		// Initialise camera
 		camera = new OrthographicCamera();
@@ -65,6 +67,7 @@ public class Pegasus extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		// Render the ship
+		background.draw(batch, shapeRenderer, ship.getPos());
 		ship.draw(batch, shapeRenderer);
 		
 		ship.reset();

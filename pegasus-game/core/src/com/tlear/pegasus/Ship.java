@@ -342,11 +342,9 @@ public class Ship {
 		font.dispose();
 	}
 	
-	/*
-	public void setDirection(ShipDirection d) {
-		shipDirection = d;
+	public Vector2 getPos() {
+		return new Vector2(x, y);
 	}
-	*/
 	
 	
 }
