@@ -260,8 +260,6 @@ public class Ship {
 			}
 		}
 		
-		checkOutOfBounds();
-		
 		hitBox.x = x + offX;
 		hitBox.y = y + offY;
 	
@@ -339,22 +337,6 @@ public class Ship {
 		shipDirection = d;
 	}
 	*/
-	
-
-	
-	
-	private void checkOutOfBounds() {
-		if (x > windowWidth - shipWidth/2) {
-			x = -shipWidth/2;
-		} else if (x < -shipWidth/2) {
-			x = windowWidth - shipWidth/2;
-		}
-		if (y > windowHeight - shipHeight/2) {
-			y = -shipHeight/2;
-		} else if (y < -shipHeight/2) {
-			y = windowHeight - shipHeight/2;
-		}
-	}
 	
 	
 }
