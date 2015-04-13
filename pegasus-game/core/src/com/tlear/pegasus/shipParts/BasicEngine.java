@@ -45,10 +45,7 @@ public class BasicEngine extends ShipEngine implements ShipPart {
 		
 		disp = new Vector2(x - texWidth / 2, y - texHeight / 2);
 		
-		float hitBoxWidth = (float) Math.sqrt((Math.pow((double) texWidth, 2.0) / 2.0));
 		hitbox = new Hitbox(x, y-15, 15, 39);
-		float offX = (texWidth / 2) - (hitbox.width / 2);
-		float offY = (texHeight / 2) - (hitbox.height / 2);
 		
 		//hitbox.disp.x = //hitbox.x + offX;
 		//hitbox.disp.y = //hitbox.y + offY;

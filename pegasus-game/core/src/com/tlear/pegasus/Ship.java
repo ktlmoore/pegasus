@@ -28,7 +28,7 @@ public class Ship {
 	private float x;
 	private float y;
 	
-	// Ship display position
+	// Ship display position relative to centre
 	private Vector2 disp;
 	
 	// Ship textures
@@ -51,6 +51,9 @@ public class Ship {
 	// Ship texture size
 	private int shipTexWidth;
 	private int shipTexHeight;
+	
+	// Centre coordinates
+	private Vector2 centre;
 
 	
 	// Ship model size
@@ -122,8 +125,10 @@ public class Ship {
 		x = windowWidth / 2 - shipTexWidth / 2;
 		y = windowHeight / 2 - shipTexHeight / 2;
 		
+		centre = new Vector2(windowWidth / 2, windowHeight / 2);
+		
 		// Initialise display position - centre of screen for Pegasus
-		disp = new Vector2(x, y);
+		disp = new Vector2(-shipTexWidth / 2, -shipTexHeight / 2);
 		
 		// Initialise the hitbox to always be contained inside the ship's texture
 		// regardless of the rotation
@@ -169,12 +174,12 @@ public class Ship {
 		
 		batch.begin();
 		// Draw ship
-		batch.draw(hullTex, disp.x, disp.y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle);
+		batch.draw(hullTex, 0+centre.x+disp.x, 0+centre.y+disp.y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle);
 		
 		// Draw engines
 		for (ShipPart p : parts.get(PartType.ENGINE)) {
 			ShipEngine e = (ShipEngine) p;
-			batch.draw(e.getTextureRegion(), disp.x + e.getDisp().x, disp.y + e.getDisp().y, shipTexWidth / 2 - e.getDisp().x, shipTexHeight / 2 - e.getDisp().y, e.getTexWidth(), e.getTexHeight(), 1.0f, 1.0f, e.getDispAngle());
+			batch.draw(e.getTextureRegion(), centre.x + disp.x + e.getDisp().x, centre.y + disp.y + e.getDisp().y, shipTexWidth / 2 - e.getDisp().x, shipTexHeight / 2 - e.getDisp().y, e.getTexWidth(), e.getTexHeight(), 1.0f, 1.0f, e.getDispAngle());
 		}
 		batch.end();
 		
@@ -192,6 +197,7 @@ public class Ship {
 				// Calculate where to fire laser from
 				Vector2 tmp = new Vector2(disp);
 				tmp.add(l.getFiringOrigin());
+				tmp.add(centre);
 				shapeRenderer.line(tmp, laserTarget);
 			}
 		}
@@ -202,7 +208,7 @@ public class Ship {
 		for (ShipPart p : shipLasers) {
 			// Convert each part into a laser again - safe
 			ShipLaser l = (ShipLaser) p;
-			batch.draw(l.getTextureRegion(), disp.x + l.getDisp().x, disp.y + l.getDisp().y, l.getTexWidth() / 2, l.getTexHeight() / 2, l.getTexWidth(), l.getTexHeight(), 1.0f, 1.0f, l.getDispAngle());
+			batch.draw(l.getTextureRegion(), centre.x + disp.x + l.getDisp().x, centre.y + disp.y + l.getDisp().y, l.getTexWidth() / 2, l.getTexHeight() / 2, l.getTexWidth(), l.getTexHeight(), 1.0f, 1.0f, l.getDispAngle());
 		}
 		
 		
@@ -214,7 +220,7 @@ public class Ship {
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.identity();
 			shapeRenderer.setColor(0, 1, 0, 1);
-			shapeRenderer.translate(disp.x + shipTexWidth/2, disp.y + shipTexHeight/2, 0);
+			shapeRenderer.translate(centre.x, centre.y, 0);
 			shapeRenderer.rotate(0f, 0f, 1.0f, shipAngle);
 			shapeRenderer.rect(-hitBox.width/2, -hitBox.height/2, hitBox.width, hitBox.height);
 			
@@ -313,7 +319,7 @@ public class Ship {
 			ShipLaser l = (ShipLaser) p;
 			
 			// Fire each laser at the target 
-			l.fireAt(new Vector2(pos.x - disp.x, pos.y - disp.y));
+			l.fireAt(new Vector2(pos.x - centre.x, pos.y - centre.y));
 		}
 		
 		
