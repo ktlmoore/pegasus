@@ -76,10 +76,10 @@ public class Pegasus extends ApplicationAdapter {
 			ship.addAngle(-0.05f);
 		}
 		if (Gdx.input.isKeyPressed(Keys.S)) { 
-			ship.addSpeed(-5);
+			ship.reduceSpeed();
 		}
 		if (Gdx.input.isKeyPressed(Keys.W)) {
-			ship.addSpeed(5);
+			ship.addSpeed();
 		}
 		if (Gdx.input.isKeyPressed(Keys.X)) {
 			ship.stopMoving();

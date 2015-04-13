@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.Hitbox;
 
-public class ShipLaser extends ShipWeapon {
+public class ShipLaser extends ShipWeapon implements ShipPart {
 	// Texture
 	private Texture laserImage;
 	private TextureRegion laserTexture;

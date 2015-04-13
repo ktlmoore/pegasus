@@ -10,7 +10,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.tlear.pegasus.shipParts.BasicEngine;
 import com.tlear.pegasus.shipParts.PartType;
+import com.tlear.pegasus.shipParts.ShipEngine;
 import com.tlear.pegasus.shipParts.ShipLaser;
 import com.tlear.pegasus.shipParts.ShipPart;
 
@@ -38,13 +40,11 @@ public class Ship {
 	
 	// Ship movement model
 	private float shipAngle;
-	private float shipSpeed;
 	
 	private ShipDirection shipDirection;
 	public float rotationalVelocity;
 	
 	// Constraints
-	private int maxSpeed;
 	private int maxRotationalVelocity;
 	
 	// Ship texture size
@@ -98,8 +98,7 @@ public class Ship {
 		font.setColor(Color.GREEN);
 		
 		
-		// Initialise speed and rotation
-		shipSpeed = 0f;
+		// Initialise rotation
 		shipAngle = 0f;
 		rotationalVelocity = 0f;
 		
@@ -135,8 +134,12 @@ public class Ship {
 		parts = new HashMap<PartType, Set<ShipPart>>();
 		HashSet<ShipPart> lasers = new HashSet<ShipPart>();
 		lasers.add(new ShipLaser(new Vector2(shipTexWidth / 2, shipTexHeight / 2)));	// Have a standard laser cannon
+		// Engines
+		HashSet<ShipPart> engines = new HashSet<ShipPart>();
+		engines.add(new BasicEngine(new Vector2(20, shipTexHeight - 78)));
 		
 		parts.put(PartType.LASER, lasers);
+		parts.put(PartType.ENGINE, engines);
 		
 		laserTarget = new Vector2();
 		
@@ -146,7 +149,6 @@ public class Ship {
 		this.windowHeight = windowHeight;
 		
 		// Initialise constraints
-		maxSpeed = 200;
 		maxRotationalVelocity = 2;
 		
 		// Set debug mode
@@ -161,6 +163,12 @@ public class Ship {
 		batch.begin();
 		// Draw ship
 		batch.draw(shipTextures.get(shipDirection), disp.x, disp.y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle);
+		
+		// Draw engines
+		for (ShipPart p : parts.get(PartType.ENGINE)) {
+			ShipEngine e = (ShipEngine) p;
+			batch.draw(e.getTextureRegion(), disp.x + e.getDisp().x, disp.y + e.getDisp().y, shipTexWidth / 2 - e.getDisp().x, shipTexHeight / 2 - e.getDisp().y, e.getTexWidth(), e.getTexHeight(), 1.0f, 1.0f, e.getDispAngle());
+		}
 		batch.end();
 		
 		
@@ -219,13 +227,18 @@ public class Ship {
 			((ShipLaser) p).notFiring();
 		}
 		
-		// Move the ship
-
-		double dx = shipSpeed * Math.cos(degreesToRadians(shipAngle+90)) * Gdx.graphics.getDeltaTime();
-		double dy = shipSpeed * Math.sin(degreesToRadians(shipAngle+90)) * Gdx.graphics.getDeltaTime();
-		
-		x += dx;
-		y += dy;
+		/* Move the ship */
+		// Sum the velocities of the engines!
+		Vector2 d = new Vector2(0, 0);
+		for (ShipPart p : parts.get(PartType.ENGINE)) {
+			d.add(((ShipEngine) p).getVelocity());
+		}
+		// Scale by delta
+		d.scl(Gdx.graphics.getDeltaTime());
+			
+		// Update ship location
+		x += d.x;
+		y += d.y;
 		
 		shipAngle += rotationalVelocity;
 		// Rotate all the parts
@@ -242,7 +255,7 @@ public class Ship {
 	
 		
 		if (debugMode) {
-			debugString = "Speed: " + shipSpeed;
+			debugString = "Speed: " + d.len();
 			debugString+= "\nAngle: " + (int) shipAngle; 
 			debugString+= "\nx: " + (int) x; 
 			debugString+= "\ny: " + (int) y;
@@ -259,13 +272,18 @@ public class Ship {
 		}
 	}
 	
-	public void addSpeed(int s) {
-		if (shipSpeed + s <= maxSpeed && shipSpeed + s >= -maxSpeed / 2) {
-			shipSpeed += s;
-			shipDirection = s > 0 ? ShipDirection.FORWARD : ShipDirection.BACKWARD;
-		} else {
-			shipDirection = shipDirection != ShipDirection.NONE ? shipDirection : ShipDirection.NONE;
+	public void addSpeed() {
+		for (ShipPart p : parts.get(PartType.ENGINE)) {
+			((ShipEngine) p).increaseThrust();
 		}
+		shipDirection = ShipDirection.FORWARD;
+	}
+
+	public void reduceSpeed() {
+		for (ShipPart p : parts.get(PartType.ENGINE)) {
+			((ShipEngine) p).decreaseThrust();
+		}
+		shipDirection = ShipDirection.BACKWARD;
 	}
 	
 	public void fireLasers(Vector3 pos) {
@@ -293,7 +311,9 @@ public class Ship {
 	}
 	
 	public void stopMoving() {
-		shipSpeed = 0;
+		for (ShipPart p : parts.get(PartType.ENGINE)) {
+			((ShipEngine) p).zero();
+		}
 		rotationalVelocity = 0;
 		shipDirection = ShipDirection.NONE;
 	}
@@ -321,12 +341,6 @@ public class Ship {
 		} else if (y < -shipHeight/2) {
 			y = windowHeight - shipHeight/2;
 		}
-	}
-
-	
-	/* MATHS */
-	private double degreesToRadians(float deg) {
-		return deg * Math.PI / 180;
 	}
 	
 	
