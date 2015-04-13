@@ -36,7 +36,7 @@ public class BasicEngine extends ShipEngine implements ShipPart {
 		
 		// Set max speed and thrust!
 		maxSpeed = 200;
-		thrust = 5;
+		thrust = 1;
 		
 		texWidth = 15;
 		texHeight = 69;
