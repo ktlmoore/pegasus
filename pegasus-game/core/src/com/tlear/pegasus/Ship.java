@@ -331,9 +331,11 @@ public class Ship {
 	}
 	
 	public void stopMoving() {
+		/*
 		for (ShipPart p : parts.get(PartType.ENGINE)) {
 			((ShipEngine) p).zero();
 		}
+		*/
 		rotationalVelocity = 0;
 		//shipDirection = ShipDirection.NONE;
 	}
