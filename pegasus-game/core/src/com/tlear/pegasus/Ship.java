@@ -10,8 +10,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.tlear.pegasus.shipParts.BasicCannon;
 import com.tlear.pegasus.shipParts.BasicEngine;
 import com.tlear.pegasus.shipParts.PartType;
+import com.tlear.pegasus.shipParts.ShipCannon;
 import com.tlear.pegasus.shipParts.ShipEngine;
 import com.tlear.pegasus.shipParts.ShipLaser;
 import com.tlear.pegasus.shipParts.ShipPart;
@@ -143,6 +145,10 @@ public class Ship {
 		
 		// Initialise parts
 		parts = new HashMap<PartType, Set<ShipPart>>();
+		// Cannons
+		HashSet<ShipPart> cannons = new HashSet<ShipPart>();
+		cannons.add(new BasicCannon(new Vector2(shipTexWidth / 2, shipTexHeight - 6)));
+		// Lasers
 		HashSet<ShipPart> lasers = new HashSet<ShipPart>();
 		lasers.add(new ShipLaser(new Vector2(shipTexWidth / 2, shipTexHeight / 2)));	// Have a standard laser cannon
 		// Engines
@@ -150,6 +156,7 @@ public class Ship {
 		engines.add(new BasicEngine(new Vector2(20, shipTexHeight - 78)));
 		engines.add(new BasicEngine(new Vector2(shipTexWidth - 20, shipTexHeight - 78)));
 		
+		parts.put(PartType.CANNON, cannons);
 		parts.put(PartType.LASER, lasers);
 		parts.put(PartType.ENGINE, engines);
 		
@@ -180,6 +187,11 @@ public class Ship {
 		for (ShipPart p : parts.get(PartType.ENGINE)) {
 			ShipEngine e = (ShipEngine) p;
 			batch.draw(e.getTextureRegion(), centre.x + disp.x + e.getDisp().x, centre.y + disp.y + e.getDisp().y, shipTexWidth / 2 - e.getDisp().x, shipTexHeight / 2 - e.getDisp().y, e.getTexWidth(), e.getTexHeight(), 1.0f, 1.0f, e.getDispAngle());
+		}
+		// Draw cannons
+		for (ShipPart p : parts.get(PartType.CANNON)) {
+			ShipCannon c = (ShipCannon) p;
+			batch.draw(c.getTextureRegion(), centre.x + disp.x + c.getDisp().x, centre.y + disp.y + c.getDisp().y, shipTexWidth / 2 - c.getDisp().x, shipTexHeight / 2- c.getDisp().y, c.getTexWidth(), c.getTexHeight(), 1.0f, 1.0f, c.getDispAngle());
 		}
 		batch.end();
 		
