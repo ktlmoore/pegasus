@@ -47,7 +47,7 @@ public abstract class ShipCannon extends ShipWeapon implements ShipPart {
 		
 		disp = new Vector2(x - texW/2, y - texH/2);
 		
-		img = new Texture(Gdx.files.internal(texFileName));
+		img = new Texture(Gdx.files.internal("shipParts/" + texFileName));
 		tex = new TextureRegion(img);
 	}
 	

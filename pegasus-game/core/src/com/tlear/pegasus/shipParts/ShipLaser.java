@@ -26,7 +26,7 @@ public class ShipLaser extends ShipWeapon implements ShipPart {
 		
 		// init texture info 
 		
-		laserImage = new Texture("shipLaserTurret.png");
+		laserImage = new Texture("shipParts/shipLaserTurret.png");
 		laserTexture = new TextureRegion(laserImage);
 		
 		laserTexWidth = 21f;

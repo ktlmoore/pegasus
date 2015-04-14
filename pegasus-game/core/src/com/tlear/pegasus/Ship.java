@@ -83,25 +83,8 @@ public class Ship {
 	public Ship(int windowWidth, int windowHeight) {
 		/* Load textures */
 		
-		hullImg = new Texture(Gdx.files.internal("ship.png"));
+		hullImg = new Texture(Gdx.files.internal("shipBase/ship.png"));
 		hullTex = new TextureRegion(hullImg);
-		
-		// Set up maps of directions
-		/* DEPRECATED DEPRECATED DEPRECATED
-		shipImages = new HashMap<ShipDirection, Texture>();
-		shipImages.put(ShipDirection.NONE, new Texture(Gdx.files.internal("ship.png")));
-		shipImages.put(ShipDirection.FORWARD, new Texture(Gdx.files.internal("shipForward.png")));
-		shipImages.put(ShipDirection.BACKWARD, new Texture(Gdx.files.internal("shipBackward.png")));
-		shipImages.put(ShipDirection.LEFT, new Texture(Gdx.files.internal("shipLeft.png")));
-		shipImages.put(ShipDirection.RIGHT, new Texture(Gdx.files.internal("shipRight.png")));
-		
-		shipTextures = new HashMap<ShipDirection, TextureRegion>();
-		shipTextures.put(ShipDirection.NONE, new TextureRegion(shipImages.get(ShipDirection.NONE)));
-		shipTextures.put(ShipDirection.FORWARD, new TextureRegion(shipImages.get(ShipDirection.FORWARD)));
-		shipTextures.put(ShipDirection.BACKWARD, new TextureRegion(shipImages.get(ShipDirection.BACKWARD)));
-		shipTextures.put(ShipDirection.LEFT, new TextureRegion(shipImages.get(ShipDirection.LEFT)));
-		shipTextures.put(ShipDirection.RIGHT, new TextureRegion(shipImages.get(ShipDirection.RIGHT)));
-		*/
 		
 		// Load other textures
 		font = new BitmapFont();

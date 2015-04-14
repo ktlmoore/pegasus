@@ -1,9 +1,26 @@
 package com.tlear.pegasus.shipParts;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.Hitbox;
 
 public abstract class ShipEngine implements ShipPart {
+	/* Texture */
+	protected Texture img;
+	protected Texture imgFwd;
+	protected Texture imgBwd;
+	
+	protected TextureRegion tex;
+	protected TextureRegion texFwd;
+	protected TextureRegion texBwd;
+	
+	protected float texWidth;
+	protected float texHeight;
+	
+	protected Vector2 disp;
+	
 	// Model
 	protected float x;
 	protected float y;
@@ -27,10 +44,56 @@ public abstract class ShipEngine implements ShipPart {
 		thrust = 0;
 		hitbox = new Hitbox(x, y, 0, 0);
 		thrustDirection = 0;
+		
+		img = imgFwd = imgBwd = null;
+		tex = texFwd = texBwd = null;
+		
+		disp = null;
+	}
+	
+	public ShipEngine(Vector2 pos, float texW, float texH) {
+		this(pos);
+		
+		img = imgFwd = imgBwd = null;
+		tex = texFwd = texBwd = null;
+		
+		texWidth = texW;
+		texHeight = texH;
+		
+		disp = new Vector2(x - texWidth/2, y - texHeight/2);
+	}
+	
+	public ShipEngine(Vector2 pos, float texW, float texH, String texFileName, String texFileNameFwd, String texFileNameBwd) {
+		this(pos, texW, texH);
+		
+		   img = new Texture(Gdx.files.internal("shipParts/" + texFileName));
+		imgFwd = new Texture(Gdx.files.internal("shipParts/" + texFileNameFwd));
+		imgBwd = new Texture(Gdx.files.internal("shipParts/" + texFileNameBwd));
+		
+		   tex = new TextureRegion(img);
+		texFwd = new TextureRegion(imgFwd);
+		texBwd = new TextureRegion(imgBwd);
 	}
 	
 	/* Textures */
-	// Not managed by abstract class
+	public TextureRegion getTextureRegion() {
+		switch (thrustDirection) {
+		case -1:
+			return texBwd;
+		case 0:
+			return tex;
+		case 1:
+			return texFwd;
+		default:
+			throw new Error("Invalid Texture in basicEngine");
+		}
+	}
+	public float getTexWidth() {
+		return texWidth;
+	}
+	public float getTexHeight() {
+		return texHeight;
+	}
 	
 	/* Model */
 	// Set the location of the part in terms of offset of the hull they are attached to
@@ -62,6 +125,22 @@ public abstract class ShipEngine implements ShipPart {
 	// Get the hitbox of the part - this is the square that denotes where the part is
 	public Hitbox getHitbox() {
 		return hitbox;
+	}
+	
+	// Return display vector
+	public Vector2 getDisp() {
+		return new Vector2(disp);
+	}
+	
+
+	@Override
+	public void setDispAngle(float a) {
+		angle = a;
+	}
+
+	@Override
+	public float getDispAngle() {
+		return angle;
 	}
 	
 	/* Engine only */
