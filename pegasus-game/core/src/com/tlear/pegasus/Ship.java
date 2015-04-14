@@ -182,16 +182,13 @@ public class Ship {
 		batch.begin();
 		// Draw ship
 		batch.draw(hullTex, 0+centre.x+disp.x, 0+centre.y+disp.y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle);
-		
-		// Draw engines
-		for (ShipPart p : parts.get(PartType.ENGINE)) {
-			ShipEngine e = (ShipEngine) p;
-			batch.draw(e.getTextureRegion(), centre.x + disp.x + e.getDisp().x, centre.y + disp.y + e.getDisp().y, shipTexWidth / 2 - e.getDisp().x, shipTexHeight / 2 - e.getDisp().y, e.getTexWidth(), e.getTexHeight(), 1.0f, 1.0f, e.getDispAngle());
-		}
-		// Draw cannons
-		for (ShipPart p : parts.get(PartType.CANNON)) {
-			ShipCannon c = (ShipCannon) p;
-			batch.draw(c.getTextureRegion(), centre.x + disp.x + c.getDisp().x, centre.y + disp.y + c.getDisp().y, shipTexWidth / 2 - c.getDisp().x, shipTexHeight / 2- c.getDisp().y, c.getTexWidth(), c.getTexHeight(), 1.0f, 1.0f, c.getDispAngle());
+		// Draw all ship parts except lasers.  Lasers come last.
+		for (Entry<PartType, Set<ShipPart>> e : parts.entrySet()) {
+			if (e.getKey() != PartType.LASER) {
+				for (ShipPart p : e.getValue()) {
+					batch.draw(p.getTextureRegion(), centre.x + disp.x + p.getDisp().x, centre.y + disp.y + p.getDisp().y, shipTexWidth / 2 - p.getDisp().x, shipTexHeight / 2 - p.getDisp().y, p.getTexWidth(), p.getTexHeight(), 1.0f, 1.0f, p.getDispAngle());
+				}
+			}
 		}
 		batch.end();
 		
