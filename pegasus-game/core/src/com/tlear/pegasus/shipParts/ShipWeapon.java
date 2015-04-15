@@ -53,6 +53,10 @@ public abstract class ShipWeapon implements ShipPart {
 		return hitbox;
 	}
 	
+	public void update() {
+		
+	}
+	
 	/* Weapon only */
 	// We want to know where to fire our "firing" texture from
 	public Vector2 getFiringOrigin() {

@@ -15,5 +15,9 @@ public class BasicEngine extends ShipEngine implements ShipPart {
 		hitbox = new Hitbox(x, y-15, 15, 39);
 		
 	}
+	
+	public void update() {
+		
+	}
 
 }
