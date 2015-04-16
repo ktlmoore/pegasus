@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.Hitbox;
 import com.tlear.pegasus.Ship;
@@ -113,8 +114,11 @@ public abstract class ShipEngine implements ShipPart {
 			// We need to rotate at the parent's display
 			Vector2 origin = new Vector2(parent.getDisp());
 			
-			batch.draw(getTextureRegion(), drawDisp.x, drawDisp.y, originX, originY, width, height, scaleX, scaleY, rotation);
+			batch.draw(getTextureRegion(), drawDisp.x, drawDisp.y, origin.x, origin.y, texWidth, texHeight, 1.0f, 1.0f, angle);
 		}
+	}
+	public void update() {
+		resetThrustDirection();
 	}
 	
 	/* Model */
@@ -184,7 +188,7 @@ public abstract class ShipEngine implements ShipPart {
 		thrust(-1);
 		thrustDirection = -1;
 	}
-	public void resetThrustDirection() {
+	private void resetThrustDirection() {
 		thrustDirection = 0;
 	}
 	public void zero() {

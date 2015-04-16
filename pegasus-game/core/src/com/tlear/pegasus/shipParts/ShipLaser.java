@@ -1,17 +1,20 @@
 package com.tlear.pegasus.shipParts;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.Hitbox;
+import com.tlear.pegasus.Ship;
 
 public class ShipLaser extends ShipWeapon implements ShipPart {
 	// Texture
-	private Texture laserImage;
-	private TextureRegion laserTexture;
+	private Texture img;
+	private TextureRegion tex;
 	
-	private float laserTexWidth;
-	private float laserTexHeight;
+	private float texWidth;
+	private float texHeight;
 	
 	private Vector2 disp;
 	private float dispAngle;
@@ -21,16 +24,16 @@ public class ShipLaser extends ShipWeapon implements ShipPart {
 	private boolean firing;
 	private Vector2 target;
 	
-	public ShipLaser(Vector2 location) {
-		super(location);
+	public ShipLaser(Vector2 location, Ship parent) {
+		super(location, parent);
 		
 		// init texture info 
 		
-		laserImage = new Texture("shipParts/shipLaserTurret.png");
-		laserTexture = new TextureRegion(laserImage);
+		img = new Texture("shipParts/shipLaserTurret.png");
+		tex = new TextureRegion(img);
 		
-		laserTexWidth = 21f;
-		laserTexHeight = 23f;
+		texWidth = 21f;
+		texHeight = 23f;
 		
 		// init model info
 		
@@ -56,18 +59,41 @@ public class ShipLaser extends ShipWeapon implements ShipPart {
 		dispAngle = a;
 	}
 	
+	/* DRAW AND UPDATE */
+	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		
+		// Only draw if we have a texture
+		if (tex != null) {
+			// Add parent disp to disp
+			Vector2 dispVec = new Vector2(disp);
+			dispVec.add(parent.getDisp());
+			
+			// Get centre of rotation
+			Vector2 origin = new Vector2(parent.getCentre());
+			
+			// Draw
+			batch.draw(getTextureRegion(), dispVec.x, dispVec.y, origin.x, origin.y, texWidth, texHeight, 1.0f, 1.0f, dispAngle);
+		}
+		
+		// TO DO DRAW LASER BEAM
+	}
+	
+	public void update() {
+		notFiring();
+	}
+	
 	/* Texture */
 	
 	public TextureRegion getTextureRegion() {
-		return laserTexture;
+		return tex;
 	}
 	
 	public float getTexWidth() {
-		return laserTexWidth;
+		return texWidth;
 	}
 	
 	public float getTexHeight() {
-		return laserTexHeight;
+		return texHeight;
 	}
 	
 	public Vector2 getDisp() {
@@ -92,9 +118,9 @@ public class ShipLaser extends ShipWeapon implements ShipPart {
 		
 		// Fire at the target
 		Vector2 laserVector = new Vector2(target);
-		laserVector.sub(new Vector2(disp.x + laserTexWidth/2, disp.y + laserTexHeight/2));
+		laserVector.sub(new Vector2(disp.x + texWidth/2, disp.y + texHeight/2));
 		float a = radiansToDegrees(Math.atan(laserVector.y / laserVector.x)) - 90;
-		if (target.x < disp.x + laserTexWidth/2) a += 180;
+		if (target.x < disp.x + texWidth/2) a += 180;
 		setAngle(a);
 	}
 	// A method to say if imma firin mah lazor
@@ -102,7 +128,7 @@ public class ShipLaser extends ShipWeapon implements ShipPart {
 		return firing;
 	}
 	// A method to say I stop firing my laser
-	public void notFiring() {
+	private void notFiring() {
 		firing = false;
 	}
 	// A method to say where imma firin mah lazor at

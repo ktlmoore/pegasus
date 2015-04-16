@@ -2,6 +2,7 @@ package com.tlear.pegasus.shipParts;
 
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.Hitbox;
+import com.tlear.pegasus.Ship;
 
 public abstract class ShipWeapon implements ShipPart {
 	// Model variables
@@ -10,12 +11,16 @@ public abstract class ShipWeapon implements ShipPart {
 	protected float angle;
 	protected Hitbox hitbox;
 	
-	public ShipWeapon(Vector2 pos) {
+	protected Ship parent;
+	
+	public ShipWeapon(Vector2 pos, Ship parent) {
 		// pos is the centre of the weapon, relative to the hull we're putting it on.
 		x = pos.x;
 		y = pos.y;
 		angle = 0;
 		hitbox = new Hitbox(x, y, 0f, 0f);
+		
+		this.parent = parent;
 	}
 	
 	/* Textures */
@@ -51,10 +56,6 @@ public abstract class ShipWeapon implements ShipPart {
 	// Get the hitbox of the part - this is the square that denotes where the part is
 	public Hitbox getHitbox() {
 		return hitbox;
-	}
-	
-	public void update() {
-		
 	}
 	
 	/* Weapon only */

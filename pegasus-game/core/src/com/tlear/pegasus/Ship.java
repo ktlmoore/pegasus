@@ -130,14 +130,14 @@ public class Ship {
 		parts = new HashMap<PartType, Set<ShipPart>>();
 		// Cannons
 		HashSet<ShipPart> cannons = new HashSet<ShipPart>();
-		cannons.add(new BasicCannon(new Vector2(shipTexWidth / 2, shipTexHeight - 6)));
+		cannons.add(new BasicCannon(new Vector2(shipTexWidth / 2, shipTexHeight - 6), this));
 		// Lasers
 		HashSet<ShipPart> lasers = new HashSet<ShipPart>();
-		lasers.add(new ShipLaser(new Vector2(shipTexWidth / 2, shipTexHeight / 2)));	// Have a standard laser cannon
+		lasers.add(new ShipLaser(new Vector2(shipTexWidth / 2, shipTexHeight / 2), this));	// Have a standard laser cannon
 		// Engines
 		HashSet<ShipPart> engines = new HashSet<ShipPart>();
-		engines.add(new BasicEngine(new Vector2(20, shipTexHeight - 78)));
-		engines.add(new BasicEngine(new Vector2(shipTexWidth - 20, shipTexHeight - 78)));
+		engines.add(new BasicEngine(new Vector2(20, shipTexHeight - 78), this));
+		engines.add(new BasicEngine(new Vector2(shipTexWidth - 20, shipTexHeight - 78), this));
 		
 		parts.put(PartType.CANNON, cannons);
 		parts.put(PartType.LASER, lasers);
@@ -158,6 +158,17 @@ public class Ship {
 		debugString = "";
 		
 		
+	}
+	
+	// UPDATE
+	
+	public void update() {
+		// Update every single part
+		for (Entry<PartType, Set<ShipPart>> e : parts.entrySet()) {
+			for (ShipPart p : e.getValue()) {
+				p.update();
+			}
+		}
 	}
 	
 	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
@@ -228,17 +239,6 @@ public class Ship {
 			batch.begin();
 			font.drawMultiLine(batch, debugString, 10, windowHeight-10);
 			batch.end();
-		}
-		
-		
-		/* Check for weapon resets */
-		for (ShipPart p : parts.get(PartType.LASER)) {
-			((ShipLaser) p).notFiring();
-		}
-		
-		/* Reset engine thrust direction */
-		for (ShipPart p : parts.get(PartType.ENGINE)) {
-			((ShipEngine) p).resetThrustDirection();
 		}
 		
 		/* Move the ship */
