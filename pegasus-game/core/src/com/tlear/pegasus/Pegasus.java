@@ -64,8 +64,7 @@ public class Pegasus extends ApplicationAdapter {
 		// Update the camera.
 		camera.update();
 		
-		// Update the ship
-		ship.update();
+
 		
 		batch.setProjectionMatrix(camera.combined);
 		shapeRenderer.setProjectionMatrix(camera.combined);
@@ -73,7 +72,9 @@ public class Pegasus extends ApplicationAdapter {
 		background.draw(batch, shapeRenderer, ship.getPos());
 		ship.draw(batch, shapeRenderer);
 		
-		ship.reset();
+		// Update the ship
+		ship.update();
+		
 		// Checking for keyboard input
 		if (Gdx.input.isKeyPressed(Keys.A)) {
 			ship.addAngle(0.05f);

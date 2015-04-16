@@ -2,7 +2,9 @@ package com.tlear.pegasus.shipParts;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.Ship;
 
@@ -15,6 +17,7 @@ public abstract class ShipEngine extends ShipPart implements Part {
 
 	protected TextureRegion texFwd;
 	protected TextureRegion texBwd;
+	protected TextureRegion texNeutral;
 
 	/* Model */
 	
@@ -63,6 +66,7 @@ public abstract class ShipEngine extends ShipPart implements Part {
 		
 		texFwd = new TextureRegion(imgFwd);
 		texBwd = new TextureRegion(imgBwd);
+		texNeutral = new TextureRegion(tex);
 	}
 	
 	/* Textures */
@@ -72,7 +76,7 @@ public abstract class ShipEngine extends ShipPart implements Part {
 		case -1:
 			return texBwd;
 		case 0:
-			return tex;
+			return texNeutral;
 		case 1:
 			return texFwd;
 		default:
@@ -81,7 +85,13 @@ public abstract class ShipEngine extends ShipPart implements Part {
 	}
 	
 	/* DRAW AND UPDATE */
-	// Draw as in superclass
+	@Override
+	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		// We draw as normal, but we need to update Tex first
+		tex = getTextureRegion();
+		System.out.println(thrustDirection);
+		super.draw(batch, shapeRenderer);
+	}
 	
 	@Override
 	public void update() {
