@@ -340,5 +340,13 @@ public class Ship {
 		return new Vector2(x, y);
 	}
 	
+	public Vector2 getDisp() {
+		return new Vector2(disp);
+	}
+	
+	public Vector2 getCentre() {
+		return new Vector2(centre);
+	}
+	
 	
 }

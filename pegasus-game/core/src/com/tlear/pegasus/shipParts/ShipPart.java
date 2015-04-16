@@ -1,5 +1,6 @@
 package com.tlear.pegasus.shipParts;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.Hitbox;
@@ -18,6 +19,12 @@ public interface ShipPart {
 	// We will want to know what angle to display the texture at
 	public void setDispAngle(float a);
 	public float getDispAngle();
+	
+	// DRAW //
+	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer);
+	
+	// UPDATE //
+	public void update();
 	
 	/* Model */
 	// Set the location of the part in terms of offset of the hull they are attached to

@@ -2,9 +2,11 @@ package com.tlear.pegasus.shipParts;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.Hitbox;
+import com.tlear.pegasus.Ship;
 
 public abstract class ShipEngine implements ShipPart {
 	/* Texture */
@@ -35,7 +37,9 @@ public abstract class ShipEngine implements ShipPart {
 	
 	protected int thrustDirection;	// -1, 0, 1 for BACK, NONE, FWD
 	
-	public ShipEngine(Vector2 pos) {
+	protected Ship parent;
+	
+	public ShipEngine(Vector2 pos, Ship parent) {
 		x = pos.x;
 		y = pos.y;
 		angle = 0;
@@ -49,10 +53,12 @@ public abstract class ShipEngine implements ShipPart {
 		tex = texFwd = texBwd = null;
 		
 		disp = null;
+		
+		this.parent = parent;
 	}
 	
-	public ShipEngine(Vector2 pos, float texW, float texH) {
-		this(pos);
+	public ShipEngine(Vector2 pos, float texW, float texH, Ship parent) {
+		this(pos, parent);
 		
 		img = imgFwd = imgBwd = null;
 		tex = texFwd = texBwd = null;
@@ -63,8 +69,8 @@ public abstract class ShipEngine implements ShipPart {
 		disp = new Vector2(x - texWidth/2, y - texHeight/2);
 	}
 	
-	public ShipEngine(Vector2 pos, float texW, float texH, String texFileName, String texFileNameFwd, String texFileNameBwd) {
-		this(pos, texW, texH);
+	public ShipEngine(Vector2 pos, float texW, float texH, String texFileName, String texFileNameFwd, String texFileNameBwd, Ship parent) {
+		this(pos, texW, texH, parent);
 		
 		   img = new Texture(Gdx.files.internal("shipParts/" + texFileName));
 		imgFwd = new Texture(Gdx.files.internal("shipParts/" + texFileNameFwd));
@@ -93,6 +99,22 @@ public abstract class ShipEngine implements ShipPart {
 	}
 	public float getTexHeight() {
 		return texHeight;
+	}
+	
+	/* DRAW AND UPDATE */
+	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		
+		// We draw the texture ONLY if we have a texture.  To do otherwise would be stupid
+		if (tex != null) {
+			// Where on the Batch to draw this new thing
+			Vector2 drawDisp = new Vector2(disp);
+			drawDisp.add(parent.getDisp());
+			
+			// We need to rotate at the parent's display
+			Vector2 origin = new Vector2(parent.getDisp());
+			
+			batch.draw(getTextureRegion(), drawDisp.x, drawDisp.y, originX, originY, width, height, scaleX, scaleY, rotation);
+		}
 	}
 	
 	/* Model */
