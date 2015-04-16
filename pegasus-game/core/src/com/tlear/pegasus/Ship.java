@@ -124,21 +124,7 @@ public class Ship {
 		offY = (shipTexHeight / 2) - (hitBox.height / 2);
 		
 		// Initialise parts
-		parts = new HashMap<PartType, Set<ShipPart>>();
-		// Cannons
-		HashSet<ShipPart> cannons = new HashSet<ShipPart>();
-		cannons.add(new BasicCannon(new Vector2(shipTexWidth / 2, shipTexHeight - 6), this));
-		// Lasers
-		HashSet<ShipPart> lasers = new HashSet<ShipPart>();
-		lasers.add(new ShipLaser(new Vector2(shipTexWidth / 2, shipTexHeight / 2), this));	// Have a standard laser cannon
-		// Engines
-		HashSet<ShipPart> engines = new HashSet<ShipPart>();
-		engines.add(new BasicEngine(new Vector2(20 - shipTexWidth/2, shipTexHeight/2 - 78), this));
-		engines.add(new BasicEngine(new Vector2(shipTexWidth/2 - 20, shipTexHeight/2 - 78), this));
-		
-		parts.put(PartType.CANNON, cannons);
-		parts.put(PartType.LASER, lasers);
-		parts.put(PartType.ENGINE, engines);
+		initParts();
 		
 		laserTarget = new Vector2();
 		
@@ -155,6 +141,24 @@ public class Ship {
 		debugString = "";
 		
 		
+	}
+	
+	private void initParts() {		// Initialise parts
+		parts = new HashMap<PartType, Set<ShipPart>>();
+		// Cannons
+		HashSet<ShipPart> cannons = new HashSet<ShipPart>();
+		cannons.add(new BasicCannon(new Vector2(0, shipTexHeight/2 - 6), this));
+		// Lasers
+		HashSet<ShipPart> lasers = new HashSet<ShipPart>();
+		lasers.add(new ShipLaser(new Vector2(0, 0), this));	// Have a standard laser cannon
+		// Engines
+		HashSet<ShipPart> engines = new HashSet<ShipPart>();
+		engines.add(new BasicEngine(new Vector2(20 - shipTexWidth/2, shipTexHeight/2 - 78), this));
+		engines.add(new BasicEngine(new Vector2(shipTexWidth/2 - 20, shipTexHeight/2 - 78), this));
+		
+		parts.put(PartType.CANNON, cannons);
+		parts.put(PartType.LASER, lasers);
+		parts.put(PartType.ENGINE, engines);
 	}
 	
 	// UPDATE
