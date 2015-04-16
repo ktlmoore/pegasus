@@ -113,7 +113,7 @@ public class Ship {
 		centre = new Vector2(windowWidth / 2, windowHeight / 2);
 		
 		// Initialise display position - centre of screen for Pegasus
-		disp = new Vector2(-shipTexWidth / 2, -shipTexHeight / 2);
+		disp = new Vector2(centre.x-shipTexWidth / 2, centre.y-shipTexHeight / 2);
 		
 		// Initialise the hitbox to always be contained inside the ship's texture
 		// regardless of the rotation
@@ -136,8 +136,8 @@ public class Ship {
 		lasers.add(new ShipLaser(new Vector2(shipTexWidth / 2, shipTexHeight / 2), this));	// Have a standard laser cannon
 		// Engines
 		HashSet<ShipPart> engines = new HashSet<ShipPart>();
-		engines.add(new BasicEngine(new Vector2(20, shipTexHeight - 78), this));
-		engines.add(new BasicEngine(new Vector2(shipTexWidth - 20, shipTexHeight - 78), this));
+		engines.add(new BasicEngine(new Vector2(20 - shipTexWidth/2, shipTexHeight/2 - 78), this));
+		engines.add(new BasicEngine(new Vector2(shipTexWidth/2 - 20, shipTexHeight/2 - 78), this));
 		
 		parts.put(PartType.CANNON, cannons);
 		parts.put(PartType.LASER, lasers);
@@ -168,77 +168,6 @@ public class Ship {
 			for (ShipPart p : e.getValue()) {
 				p.update();
 			}
-		}
-	}
-	
-	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
-		
-		batch.begin();
-		// Draw ship
-		batch.draw(hullTex, 0+centre.x+disp.x, 0+centre.y+disp.y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle);
-		// Draw all ship parts except lasers.  Lasers come last.
-		for (Entry<PartType, Set<ShipPart>> e : parts.entrySet()) {
-			if (e.getKey() != PartType.LASER) {
-				for (ShipPart p : e.getValue()) {
-					batch.draw(p.getTextureRegion(), centre.x + disp.x + p.getDisp().x, centre.y + disp.y + p.getDisp().y, shipTexWidth / 2 - p.getDisp().x, shipTexHeight / 2 - p.getDisp().y, p.getTexWidth(), p.getTexHeight(), 1.0f, 1.0f, p.getDispAngle());
-				}
-			}
-		}
-		batch.end();
-		
-		
-		shapeRenderer.begin(ShapeType.Line);
-		//Draw lasers
-		HashSet<ShipPart> shipLasers = new HashSet<ShipPart>(parts.get(PartType.LASER));
-		for (ShipPart p : shipLasers) {
-			// Convert each part into laser - safe
-			ShipLaser l = (ShipLaser) p;
-			if (l.isFiring()) {
-				shapeRenderer.setColor(1, 0, 0, 1);
-				shapeRenderer.identity();
-				
-				// Calculate where to fire laser from
-				Vector2 tmp = new Vector2(disp);
-				tmp.add(l.getFiringOrigin());
-				tmp.add(centre);
-				shapeRenderer.line(tmp, laserTarget);
-			}
-		}
-		shapeRenderer.end();
-		
-		// Draw all laser parts after lasers
-		batch.begin();
-		for (ShipPart p : shipLasers) {
-			// Convert each part into a laser again - safe
-			ShipLaser l = (ShipLaser) p;
-			batch.draw(l.getTextureRegion(), centre.x + disp.x + l.getDisp().x, centre.y + disp.y + l.getDisp().y, l.getTexWidth() / 2, l.getTexHeight() / 2, l.getTexWidth(), l.getTexHeight(), 1.0f, 1.0f, l.getDispAngle());
-		}
-		
-		
-		batch.end();
-		
-		// Draw debug info last always
-		if (debugMode) {
-			//Draw debug info
-			shapeRenderer.begin(ShapeType.Line);
-			shapeRenderer.identity();
-			shapeRenderer.setColor(0, 1, 0, 1);
-			shapeRenderer.translate(centre.x, centre.y, 0);
-			shapeRenderer.rotate(0f, 0f, 1.0f, shipAngle);
-			shapeRenderer.rect(-hitBox.width/2, -hitBox.height/2, hitBox.width, hitBox.height);
-			
-			// Draw every part's hitbox in blue
-			shapeRenderer.setColor(0, 0.5f, 1, 1);
-			for (Entry<PartType, Set<ShipPart>> entry : parts.entrySet()) {
-				for (ShipPart p : entry.getValue()) {
-					shapeRenderer.rect(p.getHitbox().disp.x - shipTexWidth/2, p.getHitbox().disp.y - shipTexHeight/2, p.getHitbox().width, p.getHitbox().height);
-				}
-			}
-			shapeRenderer.end();
-			
-			batch.begin();
-			font.drawMultiLine(batch, debugString, 10, windowHeight-10);
-			batch.end();
 		}
 		
 		/* Move the ship */
@@ -274,6 +203,78 @@ public class Ship {
 			debugString+= "\nRotVel: " + (double) ((int) (rotationalVelocity*100)) / 100 + "º"; 
 			debugString+= "\nLaserTarget: " + laserTarget.toString();
 		}
+	}
+	
+	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		
+		batch.begin();
+		// Draw ship
+		batch.draw(hullTex, disp.x, disp.y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle);
+		// Draw all ship parts except lasers.  Lasers come last.
+		for (Entry<PartType, Set<ShipPart>> e : parts.entrySet()) {
+			if (e.getKey() != PartType.LASER) {
+				for (ShipPart p : e.getValue()) {
+					p.draw(batch, shapeRenderer);
+				}
+			}
+		}
+		batch.end();
+		
+		
+		shapeRenderer.begin(ShapeType.Line);
+		//Draw lasers
+		HashSet<ShipPart> shipLasers = new HashSet<ShipPart>(parts.get(PartType.LASER));
+		for (ShipPart p : shipLasers) {
+			// Convert each part into laser - safe
+			ShipLaser l = (ShipLaser) p;
+			if (l.isFiring()) {
+				shapeRenderer.setColor(1, 0, 0, 1);
+				shapeRenderer.identity();
+				
+				// Calculate where to fire laser from
+				Vector2 tmp = new Vector2(disp);
+				tmp.add(l.getFiringOrigin());
+				tmp.add(centre);
+				shapeRenderer.line(tmp, laserTarget);
+			}
+		}
+		shapeRenderer.end();
+		
+		// Draw all laser parts after lasers
+		batch.begin();
+		for (ShipPart p : shipLasers) {
+			// Convert each part into a laser again - safe
+			p.draw(batch, shapeRenderer);
+		}
+		
+		
+		batch.end();
+		
+		// Draw debug info last always
+		if (!debugMode) {
+			//Draw debug info
+			shapeRenderer.begin(ShapeType.Line);
+			shapeRenderer.identity();
+			shapeRenderer.setColor(0, 1, 0, 1);
+			shapeRenderer.translate(centre.x, centre.y, 0);
+			shapeRenderer.rotate(0f, 0f, 1.0f, shipAngle);
+			shapeRenderer.rect(-hitBox.width/2, -hitBox.height/2, hitBox.width, hitBox.height);
+			
+			// Draw every part's hitbox in blue
+			shapeRenderer.setColor(0, 0.5f, 1, 1);
+			for (Entry<PartType, Set<ShipPart>> entry : parts.entrySet()) {
+				for (ShipPart p : entry.getValue()) {
+					shapeRenderer.rect(p.getHitbox().disp.x - shipTexWidth/2, p.getHitbox().disp.y - shipTexHeight/2, p.getHitbox().width, p.getHitbox().height);
+				}
+			}
+			shapeRenderer.end();
+			
+			batch.begin();
+			font.drawMultiLine(batch, debugString, 10, windowHeight-10);
+			batch.end();
+		}
+		
+		
 		
 	}
 	

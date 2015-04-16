@@ -64,6 +64,9 @@ public class Pegasus extends ApplicationAdapter {
 		// Update the camera.
 		camera.update();
 		
+		// Update the ship
+		ship.update();
+		
 		batch.setProjectionMatrix(camera.combined);
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		// Render the ship

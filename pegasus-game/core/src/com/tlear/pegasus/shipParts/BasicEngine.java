@@ -13,7 +13,7 @@ public class BasicEngine extends ShipEngine implements ShipPart {
 		maxSpeed = 200;
 		thrust = 1;
 		
-		hitbox = new Hitbox(x, y-15, 15, 39);
+		hitbox = new Hitbox(pos.x, pos.y-15, 15, 39);
 		
 	}
 }

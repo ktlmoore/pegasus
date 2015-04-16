@@ -22,12 +22,13 @@ public abstract class ShipEngine implements ShipPart {
 	protected float texWidth;
 	protected float texHeight;
 	
-	protected Vector2 disp;
+	protected Vector2 disp;	// The coordinates in the window at which to display this
+	protected Vector2 origin;	// The coordinates in the window around which to scale/rotate this
 	
 	// Model
-	protected float x;
-	protected float y;
-	protected float angle;
+	protected Vector2 pos;		// Space coordinates
+	protected Vector2 offset;	// The offset from the centre (i.e. what we add to our position to get to the centre of the ship)
+	protected float angle;	// The angle the part has (relative to north)
 	
 	protected float maxSpeed;
 	protected float thrust;
@@ -38,28 +39,36 @@ public abstract class ShipEngine implements ShipPart {
 	
 	protected int thrustDirection;	// -1, 0, 1 for BACK, NONE, FWD
 	
-	protected Ship parent;
+	protected Ship parent;	// The ship we are attached to
 	
-	public ShipEngine(Vector2 pos, Ship parent) {
-		x = pos.x;
-		y = pos.y;
+	public ShipEngine(Vector2 offset, Ship parent) {
+		// Assuming no texture
+		
+		// Pos here is the position on the parent of the part.
+		// So if it is given (a, b) then it will be -a and -b from the parent's centre.
+		// Offset is (a, b).
+		offset = new Vector2(offset);
+		System.out.println(offset);
+		
+		pos = new Vector2(parent.getPos());
+		
 		angle = 0;
 		maxSpeed = 0;
 		velocity = new Vector2(0, 0);
 		thrust = 0;
-		hitbox = new Hitbox(x, y, 0, 0);
+		hitbox = new Hitbox(pos.x, pos.y, 0, 0);
 		thrustDirection = 0;
 		
 		img = imgFwd = imgBwd = null;
 		tex = texFwd = texBwd = null;
 		
-		disp = null;
+		disp = origin = null;
 		
 		this.parent = parent;
 	}
 	
-	public ShipEngine(Vector2 pos, float texW, float texH, Ship parent) {
-		this(pos, parent);
+	public ShipEngine(Vector2 offset, float texW, float texH, Ship parent) {
+		this(offset, parent);
 		
 		img = imgFwd = imgBwd = null;
 		tex = texFwd = texBwd = null;
@@ -67,7 +76,16 @@ public abstract class ShipEngine implements ShipPart {
 		texWidth = texW;
 		texHeight = texH;
 		
-		disp = new Vector2(x - texWidth/2, y - texHeight/2);
+		disp = new Vector2(parent.getCentre());	// The display vector - where in the window to display this
+		disp.add(offset);	// We subtract the offset.
+		disp.sub(texWidth/2, texHeight/2);	// And then we subtract our own disp
+		
+		System.out.println(parent.getDisp());
+		System.out.println(disp);
+		
+		origin = new Vector2(offset);	// The origin of rotation.  We add half the texture dimensions to find the centre from the bottom left corner
+		origin.scl(-1);
+		origin.add(new Vector2(texWidth/2, texHeight/2));
 	}
 	
 	public ShipEngine(Vector2 pos, float texW, float texH, String texFileName, String texFileNameFwd, String texFileNameBwd, Ship parent) {
@@ -107,14 +125,9 @@ public abstract class ShipEngine implements ShipPart {
 		
 		// We draw the texture ONLY if we have a texture.  To do otherwise would be stupid
 		if (tex != null) {
-			// Where on the Batch to draw this new thing
-			Vector2 drawDisp = new Vector2(disp);
-			drawDisp.add(parent.getDisp());
 			
-			// We need to rotate at the parent's display
-			Vector2 origin = new Vector2(parent.getDisp());
 			
-			batch.draw(getTextureRegion(), drawDisp.x, drawDisp.y, origin.x, origin.y, texWidth, texHeight, 1.0f, 1.0f, angle);
+			batch.draw(getTextureRegion(), disp.x, disp.y, origin.x, origin.y, texWidth, texHeight, 1.0f, 1.0f, angle);
 		}
 	}
 	public void update() {
@@ -124,17 +137,17 @@ public abstract class ShipEngine implements ShipPart {
 	/* Model */
 	// Set the location of the part in terms of offset of the hull they are attached to
 	public void setX(float x) {
-		this.x = x;
+		pos.x = x;
 	}
 	public void setY(float y) {
-		this.y = y;
+		pos.y = y;
 	}
 	// Get the location of the part in terms of offset of the hull they are attached to
 	public float getX() { 
-		return x;
+		return pos.x;
 	}
 	public float getY() {
-		return y;
+		return pos.y;
 	}
 	// We do not need any "addX or addY" as these should never be changed, only reset
 	
