@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.tlear.pegasus.Hitbox;
 
 public interface Projectile {
 	
@@ -20,6 +19,5 @@ public interface Projectile {
 	
 	/* Model */
 	public Vector2 getPos();
-	public Hitbox getHitbox();
 	public int getDamage();	// The damage caused by the shot
 }

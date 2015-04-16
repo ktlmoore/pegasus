@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.tlear.pegasus.Hitbox;
 
 public abstract class LinearProjectile implements Projectile {
 	
@@ -24,7 +24,7 @@ public abstract class LinearProjectile implements Projectile {
 	protected Vector2 velocity;
 	
 	protected int damage;
-	protected Hitbox hitbox;
+	protected Rectangle hitbox;
 	
 	public LinearProjectile() {
 		/* Texture */
@@ -38,15 +38,13 @@ public abstract class LinearProjectile implements Projectile {
 		velocity = new Vector2(0, 0);
 		
 		damage = 0;
-		hitbox = null;
 	}
 	
 	public LinearProjectile(Vector2 pos, Vector2 vel) {
 		this();
 		pos = new Vector2(pos);
 		velocity = new Vector2(vel);
-		
-		hitbox = new Hitbox(pos.x, pos.y, 0, 0);
+	
 	}
 	
 	public LinearProjectile(Vector2 pos, Vector2 vel, float texW, float texH, String texFileName) {
@@ -58,7 +56,7 @@ public abstract class LinearProjectile implements Projectile {
 		tex = new TextureRegion(img);
 		
 		disp = new Vector2(pos.x - texWidth / 2, pos.y - texHeight / 2);
-		hitbox = new Hitbox(pos.x, pos.y, texWidth, texHeight);
+		hitbox = new Rectangle(pos.x, pos.y, texWidth, texHeight);
 	}
 	
 	/* UPDATE */
@@ -106,11 +104,9 @@ public abstract class LinearProjectile implements Projectile {
 	// Move the shot
 	private void move(float delta) {
 		pos.add(velocity.scl(delta));
-		// We need to move the hitbox as well
-		hitbox.setPosition(new Vector2(hitbox.x + hitbox.disp.x, hitbox.y + hitbox.disp.y));
 	}
 	
-	public Hitbox getHitbox() {
+	public Rectangle getHitbox() {
 		return hitbox;
 	}
 

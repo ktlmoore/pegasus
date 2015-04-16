@@ -8,12 +8,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.tlear.pegasus.shipParts.BasicCannon;
 import com.tlear.pegasus.shipParts.BasicEngine;
 import com.tlear.pegasus.shipParts.PartType;
-import com.tlear.pegasus.shipParts.ShipCannon;
 import com.tlear.pegasus.shipParts.ShipEngine;
 import com.tlear.pegasus.shipParts.ShipLaser;
 import com.tlear.pegasus.shipParts.ShipPart;
@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public class Ship {
-	private Hitbox hitBox;
+	private Rectangle hitBox;
 	// Ship model position
 	private float x;
 	private float y;
@@ -119,12 +119,9 @@ public class Ship {
 		// regardless of the rotation
 		
 		float hitBoxWidth = (float) Math.sqrt((Math.pow((double) shipWidth, 2.0) / 2.0));
-		hitBox = new Hitbox(x, y, hitBoxWidth, hitBoxWidth);
+		hitBox = new Rectangle(x, y, hitBoxWidth, hitBoxWidth);
 		offX = (shipTexWidth / 2) - (hitBox.width / 2);
 		offY = (shipTexHeight / 2) - (hitBox.height / 2);
-		
-		hitBox.disp.x = hitBox.x + offX;
-		hitBox.disp.y = hitBox.y + offY;
 		
 		// Initialise parts
 		parts = new HashMap<PartType, Set<ShipPart>>();
@@ -260,6 +257,7 @@ public class Ship {
 			shapeRenderer.rotate(0f, 0f, 1.0f, shipAngle);
 			shapeRenderer.rect(-hitBox.width/2, -hitBox.height/2, hitBox.width, hitBox.height);
 			
+			/*
 			// Draw every part's hitbox in blue
 			shapeRenderer.setColor(0, 0.5f, 1, 1);
 			for (Entry<PartType, Set<ShipPart>> entry : parts.entrySet()) {
@@ -268,6 +266,7 @@ public class Ship {
 				}
 			}
 			shapeRenderer.end();
+			*/
 			
 			batch.begin();
 			font.drawMultiLine(batch, debugString, 10, windowHeight-10);
