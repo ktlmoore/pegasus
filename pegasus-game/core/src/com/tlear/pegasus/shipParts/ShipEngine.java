@@ -95,6 +95,7 @@ public abstract class ShipEngine extends ShipPart implements Part {
 	
 	@Override
 	public void update() {
+		thrust(thrustDirection);
 		resetThrustDirection();
 	}
 	
@@ -103,20 +104,32 @@ public abstract class ShipEngine extends ShipPart implements Part {
 	/* Engine only */
 	// Fire engine in a direction
 	public void thrust(int sign) {
-		Vector2 tmp = new Vector2(velocity);
-		double dx = (sign * thrust) * Math.cos(degToRad * (angle+90));
-		double dy = (sign * thrust) * Math.sin(degToRad * (angle+90));
-		tmp.add(new Vector2((float) dx, (float) dy));
-		if (tmp.len() <= maxSpeed) {
-			velocity = new Vector2(tmp);
+		if (sign != 0) {
+			Vector2 tmp = new Vector2(velocity);
+			double dx = (sign * thrust) * Math.cos(degToRad * (angle+90));
+			double dy = (sign * thrust) * Math.sin(degToRad * (angle+90));
+			tmp.add(new Vector2((float) dx, (float) dy));
+			if (tmp.len() <= maxSpeed) {
+				velocity = new Vector2(tmp);
+			}
+		} else {
+			Vector2 tmp = new Vector2(velocity);
+			tmp.nor();
+			tmp.scl(-thrust);
+			//System.out.println(tmp.len());
+			velocity.add(tmp);
+			if (Math.abs(velocity.len()) <= 2.0) {
+				velocity = new Vector2(0, 0);
+			}
 		}
+		
 	}
 	public void increaseThrust() {
-		thrust(1);
+		//thrust(1);
 		thrustDirection = 1;
 	}
 	public void decreaseThrust() {
-		thrust(-1);
+		//thrust(-1);
 		thrustDirection = -1;
 	}
 	private void resetThrustDirection() {

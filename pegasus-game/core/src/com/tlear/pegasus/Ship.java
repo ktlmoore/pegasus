@@ -42,7 +42,7 @@ public class Ship {
 	
 	// Ship movement model
 	private float shipAngle;
-	
+	private boolean rotating;
 	public float rotationalVelocity;
 	
 	// Constraints
@@ -126,6 +126,8 @@ public class Ship {
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		
+		rotating = false;
+		
 		// Initialise constraints
 		maxRotationalVelocity = 2;
 		
@@ -177,13 +179,24 @@ public class Ship {
 		x += d.x;
 		y += d.y;
 		
-		shipAngle += rotationalVelocity;
+		
 		// Rotate all the parts
+		if (!rotating) {
+			if (Math.round(rotationalVelocity) > 0) {
+				rotationalVelocity -= 0.01f;
+			} else if (Math.round(rotationalVelocity) < 0) {
+				rotationalVelocity += 0.01f;
+			} else {
+				rotationalVelocity = 0f;
+			}
+		}
+		shipAngle += rotationalVelocity;
 		for (Entry<PartType, Set<ShipPart>> entry : parts.entrySet()) {
 			for (ShipPart p : entry.getValue()) {
 				p.setDispAngle(p.getDispAngle() + rotationalVelocity);
 			}
 		}
+		rotating = false;
 		
 		hitBox.x = x + offX;
 		hitBox.y = y + offY;
@@ -243,6 +256,7 @@ public class Ship {
 	}
 	
 	public void addAngle(float a) {
+		rotating = true;
 		if (Math.abs(rotationalVelocity + a) <= maxRotationalVelocity) {
 			rotationalVelocity += a;
 			//shipDirection = a > 0 ? ShipDirection.LEFT : ShipDirection.RIGHT;

@@ -10,6 +10,6 @@ public class BasicEngine extends ShipEngine implements Part {
 		
 		// Set max speed and thrust!
 		maxSpeed = 200;
-		thrust = 1;
+		thrust = 2;
 	}
 }
