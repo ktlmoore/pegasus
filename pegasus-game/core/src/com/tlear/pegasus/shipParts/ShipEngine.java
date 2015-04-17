@@ -104,24 +104,30 @@ public abstract class ShipEngine extends ShipPart implements Part {
 	/* Engine only */
 	// Fire engine in a direction
 	public void thrust(int sign) {
+		
+		Vector2 deVel = new Vector2(velocity);
+		deVel.nor();
+		deVel.scl(-thrust/2);
+		velocity.add(deVel);
+		Vector2 tmp = new Vector2(velocity);
+/*		
+		if (Math.abs(velocity.len()) <= 2.0) {
+			velocity = new Vector2(0, 0);
+		}
+	*/	
 		if (sign != 0) {
-			Vector2 tmp = new Vector2(velocity);
-			double dx = (sign * thrust) * Math.cos(degToRad * (angle+90));
-			double dy = (sign * thrust) * Math.sin(degToRad * (angle+90));
-			tmp.add(new Vector2((float) dx, (float) dy));
+			float dx = (float) Math.cos(degToRad * (angle + 90));
+			float dy = (float) Math.sin(degToRad * (angle + 90));
+			Vector2 tmp2 = new Vector2(dx, dy);
+			tmp2.nor();
+			tmp2.scl(thrust * sign);
+			tmp.add(tmp2);
+			
 			if (tmp.len() <= maxSpeed) {
-				velocity = new Vector2(tmp);
-			}
-		} else {
-			Vector2 tmp = new Vector2(velocity);
-			tmp.nor();
-			tmp.scl(-thrust);
-			//System.out.println(tmp.len());
-			velocity.add(tmp);
-			if (Math.abs(velocity.len()) <= 2.0) {
-				velocity = new Vector2(0, 0);
+				velocity.add(tmp2);
 			}
 		}
+
 		
 	}
 	public void increaseThrust() {
