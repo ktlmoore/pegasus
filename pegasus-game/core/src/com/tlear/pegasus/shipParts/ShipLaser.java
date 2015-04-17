@@ -1,5 +1,10 @@
 package com.tlear.pegasus.shipParts;
 
+import java.util.HashSet;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.Ship;
 
@@ -25,7 +30,25 @@ public class ShipLaser extends ShipWeapon implements Part {
 	
 	
 	/* DRAW AND UPDATE */
-	// draw inherits
+	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		batch.end();
+		
+		// We need to draw the laser!
+		shapeRenderer.begin(ShapeType.Line);
+		//Draw lasers
+		
+		if (isFiring()) {
+			shapeRenderer.setColor(1, 0, 0, 1);
+			shapeRenderer.identity();
+		
+			shapeRenderer.line(getDispFiringOrigin(), target);
+		}
+		shapeRenderer.end();
+		
+		batch.begin();
+		// Then draw the turret
+		super.draw(batch, shapeRenderer);
+	}
 	
 	public void update() {
 		notFiring();
@@ -45,15 +68,17 @@ public class ShipLaser extends ShipWeapon implements Part {
 	/* Laser only */
 	// A method to say imma firin mah lazor
 	public void fireAt(Vector2 target) {
+		// target is the mouse position in the window (i.e. display vector)
 		this.target = new Vector2(target);
 		firing = true;
 		
 		// Fire at the target
+		// Set the laserVector to be the vector from the turret to the mouse
 		Vector2 laserVector = new Vector2(target);
-		laserVector.sub(new Vector2(disp.x + width/2, disp.y + height/2));
-		float a = (float) (radToDeg * ((Math.atan(laserVector.y / laserVector.x)) - 90));
-		if (target.x < disp.x + width/2) a += 180;
-		setAngle(a);
+		laserVector.sub(getDispFiringOrigin());
+		float a = laserVector.angle();//(float) (radToDeg * ((Math.atan(laserVector.y / laserVector.x)) - 90));
+		//if (target.x < disp.x + width/2) a += 180;
+		setAngle(a - 90);
 	}
 	// A method to say if imma firin mah lazor
 	public boolean isFiring() {

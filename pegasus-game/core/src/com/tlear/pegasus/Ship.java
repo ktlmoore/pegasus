@@ -36,8 +36,6 @@ public class Ship {
 	// Ship textures
 	private Texture hullImg;
 	private TextureRegion hullTex;
-	//private HashMap<ShipDirection, Texture> shipImages;
-	//private HashMap<ShipDirection, TextureRegion> shipTextures;
 	
 	// Other textures
 	private BitmapFont font;
@@ -72,9 +70,6 @@ public class Ship {
 	
 	// Parts
 	private Map<PartType, Set<ShipPart>> parts;
-	
-	// Laser target is where mouse was last
-	private Vector2 laserTarget;
 	
 	// Debug
 	private boolean debugMode;
@@ -125,8 +120,6 @@ public class Ship {
 		
 		// Initialise parts
 		initParts();
-		
-		laserTarget = new Vector2();
 		
 		// Initialise window
 		
@@ -202,7 +195,7 @@ public class Ship {
 			debugString+= "\nx: " + (int) x; 
 			debugString+= "\ny: " + (int) y;
 			debugString+= "\nRotVel: " + (double) ((int) (rotationalVelocity*100)) / 100 + "º"; 
-			debugString+= "\nLaserTarget: " + laserTarget.toString();
+			//debugString+= "\nLaserTarget: " + laserTarget.toString();
 		}
 	}
 	
@@ -213,42 +206,10 @@ public class Ship {
 		batch.draw(hullTex, disp.x, disp.y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle);
 		// Draw all ship parts except lasers.  Lasers come last.
 		for (Entry<PartType, Set<ShipPart>> e : parts.entrySet()) {
-			if (e.getKey() != PartType.LASER) {
-				for (ShipPart p : e.getValue()) {
-					p.draw(batch, shapeRenderer);
-				}
+			for (ShipPart p : e.getValue()) {
+				p.draw(batch, shapeRenderer);
 			}
 		}
-		batch.end();
-		
-		
-		shapeRenderer.begin(ShapeType.Line);
-		//Draw lasers
-		HashSet<ShipPart> shipLasers = new HashSet<ShipPart>(parts.get(PartType.LASER));
-		for (ShipPart p : shipLasers) {
-			// Convert each part into laser - safe
-			ShipLaser l = (ShipLaser) p;
-			if (l.isFiring()) {
-				shapeRenderer.setColor(1, 0, 0, 1);
-				shapeRenderer.identity();
-				
-				// Calculate where to fire laser from
-				Vector2 tmp = new Vector2(disp);
-				tmp.add(l.getFiringOrigin());
-				tmp.add(centre);
-				shapeRenderer.line(tmp, laserTarget);
-			}
-		}
-		shapeRenderer.end();
-		
-		// Draw all laser parts after lasers
-		batch.begin();
-		for (ShipPart p : shipLasers) {
-			// Convert each part into a laser again - safe
-			p.draw(batch, shapeRenderer);
-		}
-		
-		
 		batch.end();
 		
 		// Draw debug info last always
@@ -303,19 +264,18 @@ public class Ship {
 	}
 	
 	public void fireLasers(Vector3 pos) {
-		// Fires the ship's laser at the position
+		// Fires the ship's laser at the mouse
 		
-		laserTarget = new Vector2(pos.x, pos.y);
+		Vector2 laserTarget = new Vector2(pos.x, pos.y);
 		
-		// First, get the lasers
-		HashSet<ShipPart> shipLasers = new HashSet<ShipPart>(parts.get(PartType.LASER));
-		for (ShipPart p : shipLasers) {
+		// First, get the laser
+		for (ShipPart p : parts.get(PartType.LASER)) {
 			
 			// Convert each ship part to laser - safe because we only add lasers to the LASER in map
 			ShipLaser l = (ShipLaser) p;
 			
 			// Fire each laser at the target 
-			l.fireAt(new Vector2(pos.x - centre.x, pos.y - centre.y));
+			l.fireAt(laserTarget);
 		}
 		
 		

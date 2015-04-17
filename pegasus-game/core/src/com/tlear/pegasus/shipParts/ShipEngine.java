@@ -89,7 +89,7 @@ public abstract class ShipEngine extends ShipPart implements Part {
 	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		// We draw as normal, but we need to update Tex first
 		tex = getTextureRegion();
-		System.out.println(thrustDirection);
+		//System.out.println(thrustDirection);
 		super.draw(batch, shapeRenderer);
 	}
 	
