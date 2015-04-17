@@ -78,7 +78,7 @@ public class Ship {
 	public Ship(int windowWidth, int windowHeight) {
 		/* Load textures */
 		
-		hullImg = new Texture(Gdx.files.internal("shipBase/ship.png"));
+		hullImg = new Texture(Gdx.files.internal("shipBase/pegasus1.png"));
 		hullTex = new TextureRegion(hullImg);
 		
 		// Load other textures
@@ -94,12 +94,12 @@ public class Ship {
 		//shipDirection = ShipDirection.NONE;
 		
 		// Initialise ship texture size
-		shipTexWidth = 95;
-		shipTexHeight = 108;
+		shipTexWidth = 79;
+		shipTexHeight = 66;
 		
 		// Initalise the ship model size
-		shipWidth = 60;
-		shipHeight = 100;
+		shipWidth = 79;
+		shipHeight = 66;
 		
 		// Initialise position
 		x = windowWidth / 2 - shipTexWidth / 2;
@@ -140,14 +140,14 @@ public class Ship {
 		parts = new HashMap<PartType, Set<ShipPart>>();
 		// Cannons
 		HashSet<ShipPart> cannons = new HashSet<ShipPart>();
-		cannons.add(new BasicCannon(new Vector2(0, shipTexHeight/2 - 6), this));
+		cannons.add(new BasicCannon(new Vector2(0, shipTexHeight/2 - 3), this));
 		// Lasers
 		HashSet<ShipPart> lasers = new HashSet<ShipPart>();
 		lasers.add(new ShipLaser(new Vector2(0, 0), this));	// Have a standard laser cannon
 		// Engines
 		HashSet<ShipPart> engines = new HashSet<ShipPart>();
-		engines.add(new BasicEngine(new Vector2(20 - shipTexWidth/2, shipTexHeight/2 - 78), this));
-		engines.add(new BasicEngine(new Vector2(shipTexWidth/2 - 20, shipTexHeight/2 - 78), this));
+		engines.add(new BasicEngine(new Vector2(20 - shipTexWidth/2, shipTexHeight/2 - 50), this));
+		engines.add(new BasicEngine(new Vector2(shipTexWidth/2 - 20, shipTexHeight/2 - 50), this));
 		
 		parts.put(PartType.CANNON, cannons);
 		parts.put(PartType.LASER, lasers);
