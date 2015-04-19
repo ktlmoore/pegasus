@@ -1,0 +1,105 @@
+package com.tlear.pegasus.physics;
+
+import com.badlogic.gdx.math.Vector2;
+
+public class PhysicsObject {
+
+	/* Linear */
+	private Vector2 pos;				// The position of the object in space
+	private Vector2 velocity;			// The velocity of the object									v
+	private Vector2 acceleration;		// The acceleration of the object								a
+	private Vector2 force;				// The amount of force being enacted on the object				F
+	private float mass;					// The mass of the object										m
+	private Vector2 momentum;			// The linear momentum of the object							p
+	
+	/* Rotational */
+	private Vector2 radius;				// The position of the object to the centre of rot				r
+	private float angularMomentum;		// The angular moment of the object								L
+	private float momentOfInertia;		// The moment of inertia of the object							I
+	private float torque;				// The amount of torque the object is coming under				T
+	private float angularVelocity;		// The angular velocity											omega
+	private float angularAcceleration;	// The angular acceleration										alpha
+	private float angle;				// The angle that the physis object has relative to the x-axis
+	
+	
+	
+	public PhysicsObject() {
+		
+		pos = new Vector2(0, 0);
+		velocity = new Vector2(0, 0);
+		acceleration = new Vector2(0, 0);
+		force = new Vector2(0, 0);
+		mass = 1.0f;
+		momentum = new Vector2(0, 0);
+		radius = new Vector2(1, 1);
+		angularMomentum = 0;
+		momentOfInertia = 0;
+		angularVelocity = 0;
+		angularAcceleration = 0;
+		angle = 0;
+		torque = 0;
+		
+		
+	}
+	
+	/* Getters */
+	public Vector2 getPos() {
+		// Returns the position in space of the object
+		return new Vector2(pos);
+	}
+	public float getAngle() {
+		// Returns the angle of the object relative to the x-axis
+		return angle;
+	}
+	
+	/* Setters */
+	public void addForce(Vector2 f) {
+		// Add force to the total force on this object
+		force.add(f);
+	}
+	public void zeroForce() {
+		// Zeroes the amount of force on this object
+		force = new Vector2(0, 0);
+	}
+	public void setPos(Vector2 p) {
+		// Sets the position of the object
+		pos = new Vector2(p);
+	}
+	public void setMass(float m) {
+		mass = m;
+	}
+	public void setRadius(Vector2 r) {
+		radius = new Vector2(r);
+	}
+	public void addTorque(float t) {
+		torque += t;
+	}
+	public void zeroTorque() {
+		torque = 0;
+	}
+	/* Update */
+	public void update() {
+		// Update acceleration to force / mass	a_t = F_t / m_t
+		acceleration = new Vector2(force);
+		acceleration.scl(1 / mass);
+		// Update velocity by acceleration v_t = v_t-1 + a_t
+		velocity.add(acceleration);
+		// Update position by velocity (x, y)_t = (x, y)_t-1 + v_t
+		pos.add(velocity);
+		// Update momentum to mass * velocity	p_t = m_t * v_t
+		momentum = new Vector2(velocity);
+		momentum.scl(mass);
+		// Update angular momentum is radius x linear momentum 	L_t = r_t x p_t
+		Vector2 tmp = new Vector2(radius);
+		angularMomentum = tmp.crs(momentum);
+		// Update moment of intertia to angular momentum / angular velocity I_t = L_t / (omega)_t
+		momentOfInertia = angularMomentum / angularVelocity;
+		// Update angular velocity to torque / moment of inertia 	(alpha)_t = T_t / I_t
+		angularAcceleration = torque / momentOfInertia;
+		// Update angular velocity by angular acceleration	(omega)_t+1 = (omega)_t + (alpha)_t 
+		angularVelocity += angularAcceleration;
+		// Update angle by angular velocity	(theta)_t+1 = (theta)_t + (omega)_t+1
+		angle += angularVelocity;
+	}
+	
+}
