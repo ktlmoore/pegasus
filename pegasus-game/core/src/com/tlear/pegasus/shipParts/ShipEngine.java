@@ -24,7 +24,7 @@ public abstract class ShipEngine extends ShipPart implements Part {
 	protected float maxSpeed;
 	protected float thrust;
 	
-	protected Vector2 velocity;
+	protected Vector2 force;
 	
 	protected int thrustDirection;	// -1, 0, 1 for BACK, NONE, FWD
 	
@@ -33,7 +33,7 @@ public abstract class ShipEngine extends ShipPart implements Part {
 		// Assuming no texture
 		
 		maxSpeed = 0;
-		velocity = new Vector2(0, 0);
+		force = new Vector2(0, 0);
 		thrust = 0;
 		thrustDirection = 0;
 		
@@ -45,7 +45,7 @@ public abstract class ShipEngine extends ShipPart implements Part {
 		super(offset, parent, w, h);
 		
 		maxSpeed = 0;
-		velocity = new Vector2(0, 0);
+		force = new Vector2(0, 0);
 		thrust = 0;
 		thrustDirection = 0;
 		
@@ -57,7 +57,7 @@ public abstract class ShipEngine extends ShipPart implements Part {
 		super(offset, parent, w, h, texFileName);
 		
 		maxSpeed = 0;
-		velocity = new Vector2(0, 0);
+		force = new Vector2(0, 0);
 		thrust = 0;
 		thrustDirection = 0;
 		
@@ -104,45 +104,23 @@ public abstract class ShipEngine extends ShipPart implements Part {
 	/* Engine only */
 	// Fire engine in a direction
 	public void thrust(int sign) {
+		// Add force in the direction of the thrust or against it
+		force = new Vector2(-1 * (float) Math.sin(degToRad * (angle)), (float) Math.cos(degToRad * (angle)));	// Normalised vector
 		
-		Vector2 deVel = new Vector2(velocity);
-		deVel.nor();
-		deVel.scl(-thrust/2);
-		velocity.add(deVel);
-		Vector2 tmp = new Vector2(velocity);
-/*		
-		if (Math.abs(velocity.len()) <= 2.0) {
-			velocity = new Vector2(0, 0);
-		}
-	*/	
-		if (sign != 0) {
-			float dx = (float) Math.cos(degToRad * (angle + 90));
-			float dy = (float) Math.sin(degToRad * (angle + 90));
-			Vector2 tmp2 = new Vector2(dx, dy);
-			tmp2.nor();
-			tmp2.scl(thrust * sign);
-			tmp.add(tmp2);
-			
-			if (tmp.len() <= maxSpeed) {
-				velocity.add(tmp2);
-			}
-		}
-
-		
+		force.scl(thrust);	// Scale by thrust value
+		force.scl(sign);	// Scale by direction
 	}
 	public void increaseThrust() {
-		//thrust(1);
 		thrustDirection = 1;
 	}
 	public void decreaseThrust() {
-		//thrust(-1);
 		thrustDirection = -1;
 	}
 	private void resetThrustDirection() {
 		thrustDirection = 0;
 	}
 	public void zero() {
-		velocity = new Vector2(0, 0);
+		force = new Vector2(0, 0);
 		thrustDirection = 0;
 	}
 	
@@ -151,7 +129,7 @@ public abstract class ShipEngine extends ShipPart implements Part {
 	public float getMaxSpeed() {
 		return maxSpeed;
 	}
-	public Vector2 getVelocity() {
-		return new Vector2(velocity);
+	public Vector2 getForce() {
+		return new Vector2(force);
 	}
 }

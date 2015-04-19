@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.tlear.pegasus.physics.PhysicsObject;
 import com.tlear.pegasus.shipParts.BasicCannon;
 import com.tlear.pegasus.shipParts.BasicEngine;
 import com.tlear.pegasus.shipParts.PartType;
@@ -24,11 +25,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class Ship {
+public class Ship extends PhysicsObject {
 	private Rectangle hitBox;
-	// Ship model position
-	private float x;
-	private float y;
 	
 	// Ship display position relative to centre
 	private Vector2 disp;
@@ -40,17 +38,14 @@ public class Ship {
 	// Other textures
 	private BitmapFont font;
 	
-	// Ship movement model
-	private float shipAngle;
-	private boolean rotating;
-	public float rotationalVelocity;
-	
 	// Constraints
 	private int maxRotationalVelocity;
 	
 	// Ship texture size
 	private int shipTexWidth;
 	private int shipTexHeight;
+	
+	private boolean rotating;
 	
 	// Centre coordinates
 	private Vector2 centre;
@@ -76,6 +71,7 @@ public class Ship {
 	private String debugString;
 	
 	public Ship(int windowWidth, int windowHeight) {
+		super();
 		/* Load textures */
 		
 		hullImg = new Texture(Gdx.files.internal("shipBase/pegasus1.png"));
@@ -84,14 +80,6 @@ public class Ship {
 		// Load other textures
 		font = new BitmapFont();
 		font.setColor(Color.GREEN);
-		
-		
-		// Initialise rotation
-		shipAngle = 0f;
-		rotationalVelocity = 0f;
-		
-		
-		//shipDirection = ShipDirection.NONE;
 		
 		// Initialise ship texture size
 		shipTexWidth = 79;
@@ -102,19 +90,18 @@ public class Ship {
 		shipHeight = 66;
 		
 		// Initialise position
-		x = windowWidth / 2 - shipTexWidth / 2;
-		y = windowHeight / 2 - shipTexHeight / 2;
-		
-		centre = new Vector2(windowWidth / 2, windowHeight / 2);
+		setPos(new Vector2(0, 0));
 		
 		// Initialise display position - centre of screen for Pegasus
+		centre = new Vector2(windowWidth / 2, windowHeight / 2);
 		disp = new Vector2(centre.x-shipTexWidth / 2, centre.y-shipTexHeight / 2);
+		
 		
 		// Initialise the hitbox to always be contained inside the ship's texture
 		// regardless of the rotation
 		
 		float hitBoxWidth = (float) Math.sqrt((Math.pow((double) shipWidth, 2.0) / 2.0));
-		hitBox = new Rectangle(x, y, hitBoxWidth, hitBoxWidth);
+		hitBox = new Rectangle(getPos().x, getPos().y, hitBoxWidth, hitBoxWidth);
 		offX = (shipTexWidth / 2) - (hitBox.width / 2);
 		offY = (shipTexHeight / 2) - (hitBox.height / 2);
 		
@@ -159,6 +146,8 @@ public class Ship {
 	// UPDATE
 	
 	public void update() {
+		
+		
 		// Update every single part
 		for (Entry<PartType, Set<ShipPart>> e : parts.entrySet()) {
 			for (ShipPart p : e.getValue()) {
@@ -170,45 +159,30 @@ public class Ship {
 		// Sum the velocities of the engines!
 		Vector2 d = new Vector2(0, 0);
 		for (ShipPart p : parts.get(PartType.ENGINE)) {
-			d.add(((ShipEngine) p).getVelocity());
+			ShipEngine e = (ShipEngine) p;
+			addForce(e.getForce());
 		}
-		// Scale by delta
-		d.scl(Gdx.graphics.getDeltaTime());
-			
-		// Update ship location
-		x += d.x;
-		y += d.y;
 		
+		// Update movement
+		super.update();
 		
 		// Rotate all the parts
-		if (!rotating) {
-			if (Math.round(rotationalVelocity) > 0) {
-				rotationalVelocity -= 0.01f;
-			} else if (Math.round(rotationalVelocity) < 0) {
-				rotationalVelocity += 0.01f;
-			} else {
-				rotationalVelocity = 0f;
-			}
-		}
-		shipAngle += rotationalVelocity;
 		for (Entry<PartType, Set<ShipPart>> entry : parts.entrySet()) {
 			for (ShipPart p : entry.getValue()) {
-				p.setDispAngle(p.getDispAngle() + rotationalVelocity);
+				p.setDispAngle(getAngle());
 			}
 		}
 		rotating = false;
 		
-		hitBox.x = x + offX;
-		hitBox.y = y + offY;
+		hitBox.x = getPos().x + offX;
+		hitBox.y = getPos().y + offY;
 	
 		
 		if (debugMode) {
 			debugString = "Speed: " + d.len();
-			debugString+= "\nAngle: " + (int) shipAngle; 
-			debugString+= "\nx: " + (int) x; 
-			debugString+= "\ny: " + (int) y;
-			debugString+= "\nRotVel: " + (double) ((int) (rotationalVelocity*100)) / 100 + "º"; 
-			//debugString+= "\nLaserTarget: " + laserTarget.toString();
+			debugString+= "\nAngle: " + (int) getAngle(); 
+			debugString+= "\nx: " + (int) getPos().x; 
+			debugString+= "\ny: " + (int) getPos().y; 
 		}
 	}
 	
@@ -216,7 +190,8 @@ public class Ship {
 		
 		batch.begin();
 		// Draw ship
-		batch.draw(hullTex, disp.x, disp.y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, shipAngle);
+		batch.draw(hullTex, disp.x, disp.y, shipTexWidth / 2, shipTexHeight / 2, shipTexWidth, shipTexHeight, 1.0f, 1.0f, getAngle());
+		
 		// Draw all ship parts except lasers.  Lasers come last.
 		for (Entry<PartType, Set<ShipPart>> e : parts.entrySet()) {
 			for (ShipPart p : e.getValue()) {
@@ -232,7 +207,7 @@ public class Ship {
 			shapeRenderer.identity();
 			shapeRenderer.setColor(0, 1, 0, 1);
 			shapeRenderer.translate(centre.x, centre.y, 0);
-			shapeRenderer.rotate(0f, 0f, 1.0f, shipAngle);
+			shapeRenderer.rotate(0f, 0f, 1.0f, getAngle());
 			shapeRenderer.rect(-hitBox.width/2, -hitBox.height/2, hitBox.width, hitBox.height);
 			
 			/*
@@ -257,10 +232,7 @@ public class Ship {
 	
 	public void addAngle(float a) {
 		rotating = true;
-		if (Math.abs(rotationalVelocity + a) <= maxRotationalVelocity) {
-			rotationalVelocity += a;
-			//shipDirection = a > 0 ? ShipDirection.LEFT : ShipDirection.RIGHT;
-		}
+		addTorque(a);
 	}
 	
 	public void addSpeed() {
@@ -296,26 +268,16 @@ public class Ship {
 	}
 	
 	public void reset() {
-		// Set no direction
-		//shipDirection = ShipDirection.NONE;
+
 	}
 	
 	public void stopMoving() {
-		/*
-		for (ShipPart p : parts.get(PartType.ENGINE)) {
-			((ShipEngine) p).zero();
-		}
-		*/
-		rotationalVelocity = 0;
-		//shipDirection = ShipDirection.NONE;
+		zeroForce();
+		zeroTorque();
 	}
 	
 	public void dispose() {
 		font.dispose();
-	}
-	
-	public Vector2 getPos() {
-		return new Vector2(x, y);
 	}
 	
 	public Vector2 getDisp() {

@@ -1,5 +1,6 @@
 package com.tlear.pegasus.physics;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
 public class PhysicsObject {
@@ -13,8 +14,7 @@ public class PhysicsObject {
 	private Vector2 momentum;			// The linear momentum of the object							p
 	
 	/* Rotational */
-	private Vector2 radius;				// The position of the object to the centre of rot				r
-	private float angularMomentum;		// The angular moment of the object								L
+	private float radius;				// The radius of gyration of the object							k
 	private float momentOfInertia;		// The moment of inertia of the object							I
 	private float torque;				// The amount of torque the object is coming under				T
 	private float angularVelocity;		// The angular velocity											omega
@@ -29,10 +29,9 @@ public class PhysicsObject {
 		velocity = new Vector2(0, 0);
 		acceleration = new Vector2(0, 0);
 		force = new Vector2(0, 0);
-		mass = 1.0f;
+		mass = 10.0f;
 		momentum = new Vector2(0, 0);
-		radius = new Vector2(1, 1);
-		angularMomentum = 0;
+		radius = 10;
 		momentOfInertia = 0;
 		angularVelocity = 0;
 		angularAcceleration = 0;
@@ -68,8 +67,8 @@ public class PhysicsObject {
 	public void setMass(float m) {
 		mass = m;
 	}
-	public void setRadius(Vector2 r) {
-		radius = new Vector2(r);
+	public void setRadius(float r) {
+		radius = r;
 	}
 	public void addTorque(float t) {
 		torque += t;
@@ -81,25 +80,37 @@ public class PhysicsObject {
 	public void update() {
 		// Update acceleration to force / mass	a_t = F_t / m_t
 		acceleration = new Vector2(force);
-		acceleration.scl(1 / mass);
+		acceleration.scl(Gdx.graphics.getDeltaTime() / mass);
+		System.out.println("ACCELERATION: " + acceleration);
+		System.out.println("FORCE: " + force);
+		System.out.println("MASS: " + mass);
 		// Update velocity by acceleration v_t = v_t-1 + a_t
 		velocity.add(acceleration);
+		System.out.println("VELOCITY: " + velocity);
 		// Update position by velocity (x, y)_t = (x, y)_t-1 + v_t
 		pos.add(velocity);
+		System.out.println("POS: " + pos);
 		// Update momentum to mass * velocity	p_t = m_t * v_t
 		momentum = new Vector2(velocity);
 		momentum.scl(mass);
-		// Update angular momentum is radius x linear momentum 	L_t = r_t x p_t
-		Vector2 tmp = new Vector2(radius);
-		angularMomentum = tmp.crs(momentum);
-		// Update moment of intertia to angular momentum / angular velocity I_t = L_t / (omega)_t
-		momentOfInertia = angularMomentum / angularVelocity;
+		System.out.println("MOMENTUM: " + momentum);
+		// Update moment of intertia to m*k*k
+		momentOfInertia = mass * radius * radius;
+		System.out.println("MOMENT: " + momentOfInertia);
 		// Update angular velocity to torque / moment of inertia 	(alpha)_t = T_t / I_t
 		angularAcceleration = torque / momentOfInertia;
+		System.out.println("TORQUE: " + torque);
+		System.out.println("ANGULAR ACCELERATION: " + angularAcceleration);
 		// Update angular velocity by angular acceleration	(omega)_t+1 = (omega)_t + (alpha)_t 
 		angularVelocity += angularAcceleration;
+		System.out.println("ANGULAR VELOCITY: " + angularVelocity);
 		// Update angle by angular velocity	(theta)_t+1 = (theta)_t + (omega)_t+1
 		angle += angularVelocity;
+		angle %= 360;
+		System.out.println("ANGLE: " + angle);
+		force = new Vector2();
+		torque = 0;
+		
 	}
 	
 }
