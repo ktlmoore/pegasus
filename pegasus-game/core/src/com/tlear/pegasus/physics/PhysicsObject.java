@@ -31,7 +31,7 @@ public class PhysicsObject {
 		velocity = new Vector2(0, 0);
 		acceleration = new Vector2(0, 0);
 		force = new Vector2(0, 0);
-		mass = 5.0f;
+		mass = 2.0f;
 		momentum = new Vector2(0, 0);
 		radius = 10;
 		momentOfInertia = 0;
@@ -40,8 +40,8 @@ public class PhysicsObject {
 		angle = 0;
 		torque = 0;
 		
-		maxVelocity = 5;
-		maxAngularVelocity = 5;
+		maxVelocity = 15;
+		maxAngularVelocity = 6;
 		
 		
 	}
@@ -57,6 +57,9 @@ public class PhysicsObject {
 	}
 	
 	/* Setters */
+	public void zeroVelocity() {
+		velocity = new Vector2(0, 0);
+	}
 	public void addForce(Vector2 f) {
 		// Add force to the total force on this object
 		force.add(f);
@@ -113,6 +116,9 @@ public class PhysicsObject {
 		angularVelocity += angularAcceleration;
 		if (Math.abs(angularVelocity) > maxAngularVelocity) {
 			angularVelocity -= angularAcceleration;
+		}
+		if (angularAcceleration == 0) {
+			angularVelocity *= 0.95f;
 		}
 		System.out.println("ANGULAR VELOCITY: " + angularVelocity);
 		// Update angle by angular velocity	(theta)_t+1 = (theta)_t + (omega)_t+1

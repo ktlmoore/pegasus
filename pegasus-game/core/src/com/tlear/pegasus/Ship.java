@@ -280,6 +280,7 @@ public class Ship extends PhysicsObject {
 	public void stopMoving() {
 		zeroForce();
 		zeroTorque();
+		zeroVelocity();
 	}
 	
 	public void dispose() {
