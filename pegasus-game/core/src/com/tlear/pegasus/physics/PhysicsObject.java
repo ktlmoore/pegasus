@@ -12,6 +12,7 @@ public class PhysicsObject {
 	private Vector2 force;				// The amount of force being enacted on the object				F
 	private float mass;					// The mass of the object										m
 	private Vector2 momentum;			// The linear momentum of the object							p
+	private float maxVelocity;			// The maximum velocity of the object				
 	
 	/* Rotational */
 	private float radius;				// The radius of gyration of the object							k
@@ -20,6 +21,7 @@ public class PhysicsObject {
 	private float angularVelocity;		// The angular velocity											omega
 	private float angularAcceleration;	// The angular acceleration										alpha
 	private float angle;				// The angle that the physis object has relative to the x-axis
+	private float maxAngularVelocity;	// The maximum angular velocity of the object
 	
 	
 	
@@ -29,7 +31,7 @@ public class PhysicsObject {
 		velocity = new Vector2(0, 0);
 		acceleration = new Vector2(0, 0);
 		force = new Vector2(0, 0);
-		mass = 10.0f;
+		mass = 5.0f;
 		momentum = new Vector2(0, 0);
 		radius = 10;
 		momentOfInertia = 0;
@@ -37,6 +39,9 @@ public class PhysicsObject {
 		angularAcceleration = 0;
 		angle = 0;
 		torque = 0;
+		
+		maxVelocity = 5;
+		maxAngularVelocity = 5;
 		
 		
 	}
@@ -86,6 +91,9 @@ public class PhysicsObject {
 		System.out.println("MASS: " + mass);
 		// Update velocity by acceleration v_t = v_t-1 + a_t
 		velocity.add(acceleration);
+		if (velocity.len() > maxVelocity) {
+			velocity.sub(acceleration);
+		}
 		System.out.println("VELOCITY: " + velocity);
 		// Update position by velocity (x, y)_t = (x, y)_t-1 + v_t
 		pos.add(velocity);
@@ -103,6 +111,9 @@ public class PhysicsObject {
 		System.out.println("ANGULAR ACCELERATION: " + angularAcceleration);
 		// Update angular velocity by angular acceleration	(omega)_t+1 = (omega)_t + (alpha)_t 
 		angularVelocity += angularAcceleration;
+		if (Math.abs(angularVelocity) > maxAngularVelocity) {
+			angularVelocity -= angularAcceleration;
+		}
 		System.out.println("ANGULAR VELOCITY: " + angularVelocity);
 		// Update angle by angular velocity	(theta)_t+1 = (theta)_t + (omega)_t+1
 		angle += angularVelocity;
