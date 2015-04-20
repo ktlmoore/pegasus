@@ -10,13 +10,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.tlear.pegasus.physics.PhysicsObject;
 import com.tlear.pegasus.shipParts.BasicCannon;
 import com.tlear.pegasus.shipParts.BasicEngine;
 import com.tlear.pegasus.shipParts.PartType;
 import com.tlear.pegasus.shipParts.ShipEngine;
-import com.tlear.pegasus.shipParts.ShipLaser;
 import com.tlear.pegasus.shipParts.ShipPart;
 
 import java.util.HashMap;
@@ -38,14 +36,9 @@ public class Ship extends PhysicsObject {
 	// Other textures
 	private BitmapFont font;
 	
-	// Constraints
-	private int maxRotationalVelocity;
-	
 	// Ship texture size
 	private int shipTexWidth;
 	private int shipTexHeight;
-	
-	private boolean rotating;
 	
 	// Centre coordinates
 	private Vector2 centre;
@@ -113,11 +106,6 @@ public class Ship extends PhysicsObject {
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		
-		rotating = false;
-		
-		// Initialise constraints
-		maxRotationalVelocity = 2;
-		
 		// Set debug mode
 		debugMode = true;
 		debugString = "";
@@ -130,16 +118,16 @@ public class Ship extends PhysicsObject {
 		// Cannons
 		HashSet<ShipPart> cannons = new HashSet<ShipPart>();
 		cannons.add(new BasicCannon(new Vector2(0, shipTexHeight/2 - 3), this));
-		// Lasers
-		HashSet<ShipPart> lasers = new HashSet<ShipPart>();
-		lasers.add(new ShipLaser(new Vector2(0, 0), this));	// Have a standard laser cannon
+		// Lasers - removed 20.4.15
+		//HashSet<ShipPart> lasers = new HashSet<ShipPart>();
+		//lasers.add(new ShipLaser(new Vector2(0, 0), this));	// Have a standard laser cannon
 		// Engines
 		HashSet<ShipPart> engines = new HashSet<ShipPart>();
 		engines.add(new BasicEngine(new Vector2(20 - shipTexWidth/2, shipTexHeight/2 - 50), this));
 		engines.add(new BasicEngine(new Vector2(shipTexWidth/2 - 20, shipTexHeight/2 - 50), this));
 		
 		parts.put(PartType.CANNON, cannons);
-		parts.put(PartType.LASER, lasers);
+		//parts.put(PartType.LASER, lasers);
 		parts.put(PartType.ENGINE, engines);
 	}
 	
@@ -172,7 +160,6 @@ public class Ship extends PhysicsObject {
 				p.setDispAngle(getAngle());
 			}
 		}
-		rotating = false;
 		
 		hitBox.x = getPos().x + offX;
 		hitBox.y = getPos().y + offY;
@@ -231,7 +218,6 @@ public class Ship extends PhysicsObject {
 	}
 	
 	public void addAngle(float a) {
-		rotating = true;
 		addTorque(a);
 	}
 	
@@ -249,7 +235,8 @@ public class Ship extends PhysicsObject {
 		//shipDirection = ShipDirection.BACKWARD;
 	}
 	
-	public void fireLasers(Vector3 pos) {
+	//Deprecated
+	/*public void fireLasers(Vector3 pos) {
 		// Fires the ship's laser at the mouse
 		
 		Vector2 laserTarget = new Vector2(pos.x, pos.y);
@@ -265,7 +252,7 @@ public class Ship extends PhysicsObject {
 		}
 		
 		
-	}
+	}*/
 	
 	public void reset() {
 

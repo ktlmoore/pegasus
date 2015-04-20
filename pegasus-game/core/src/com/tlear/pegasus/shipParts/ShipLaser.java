@@ -1,13 +1,12 @@
 package com.tlear.pegasus.shipParts;
 
-import java.util.HashSet;
-
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.Ship;
 
+@Deprecated
 public class ShipLaser extends ShipWeapon implements Part {
 	/** EXTRA VARIABLES ***/
 	

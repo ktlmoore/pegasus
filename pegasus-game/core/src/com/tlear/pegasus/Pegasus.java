@@ -96,7 +96,7 @@ public class Pegasus extends ApplicationAdapter {
 			Vector3 touchPos = new Vector3();
 			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 			camera.unproject(touchPos);
-			ship.fireLasers(touchPos);
+			//ship.fireLasers(touchPos);
 		}
 
 		
