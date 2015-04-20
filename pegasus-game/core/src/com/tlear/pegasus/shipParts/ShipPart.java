@@ -107,7 +107,7 @@ public abstract class ShipPart implements Part {
 	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		// If we have a texture, we draw it.  Else we draw the wireframe.
 		if (tex != null) {
-			batch.draw(tex, disp.x, disp.y, origin.x, origin.y, width, height, 1.0f, 1.0f, angle);
+			batch.draw(tex, disp.x, disp.y, origin.x, origin.y, width, height, 1.0f, 1.0f, parent.getAngle());
 		}
 	}
 	

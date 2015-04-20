@@ -1,4 +1,4 @@
-package com.tlear.pegasus.shipParts;
+package com.tlear.pegasus.shipParts.engines;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.Ship;
+import com.tlear.pegasus.shipParts.Part;
+import com.tlear.pegasus.shipParts.ShipPart;
 
 public abstract class ShipEngine extends ShipPart implements Part {
 	// Extra variables
@@ -105,7 +107,7 @@ public abstract class ShipEngine extends ShipPart implements Part {
 	// Fire engine in a direction
 	public void thrust(int sign) {
 		// Add force in the direction of the thrust or against it
-		force = new Vector2(-1 * (float) Math.sin(degToRad * (angle)), (float) Math.cos(degToRad * (angle)));	// Normalised vector
+		force = new Vector2(-1 * (float) Math.sin(degToRad * (parent.getAngle() + angle)), (float) Math.cos(degToRad * (parent.getAngle() + angle)));	// Normalised vector
 		
 		force.scl(thrust);	// Scale by thrust value
 		force.scl(sign);	// Scale by direction

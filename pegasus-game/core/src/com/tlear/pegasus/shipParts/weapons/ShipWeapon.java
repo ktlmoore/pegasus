@@ -1,7 +1,9 @@
-package com.tlear.pegasus.shipParts;
+package com.tlear.pegasus.shipParts.weapons;
 
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.Ship;
+import com.tlear.pegasus.shipParts.Part;
+import com.tlear.pegasus.shipParts.ShipPart;
 
 public abstract class ShipWeapon extends ShipPart implements Part {
 	/*** Extra variables ***/

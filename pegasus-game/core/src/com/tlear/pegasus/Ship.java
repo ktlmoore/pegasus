@@ -11,11 +11,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.physics.PhysicsObject;
-import com.tlear.pegasus.shipParts.BasicCannon;
-import com.tlear.pegasus.shipParts.BasicEngine;
 import com.tlear.pegasus.shipParts.PartType;
-import com.tlear.pegasus.shipParts.ShipEngine;
 import com.tlear.pegasus.shipParts.ShipPart;
+import com.tlear.pegasus.shipParts.engines.BasicEngine;
+import com.tlear.pegasus.shipParts.engines.BasicLeftSideEngine;
+import com.tlear.pegasus.shipParts.engines.BasicRightSideEngine;
+import com.tlear.pegasus.shipParts.engines.ShipEngine;
+import com.tlear.pegasus.shipParts.weapons.BasicCannon;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -125,10 +127,17 @@ public class Ship extends PhysicsObject {
 		HashSet<ShipPart> engines = new HashSet<ShipPart>();
 		engines.add(new BasicEngine(new Vector2(20 - shipTexWidth/2, shipTexHeight/2 - 50), this));
 		engines.add(new BasicEngine(new Vector2(shipTexWidth/2 - 20, shipTexHeight/2 - 50), this));
+		// Side Engines
+		HashSet<ShipPart> leftEngines = new HashSet<ShipPart>();
+		leftEngines.add(new BasicLeftSideEngine(new Vector2(22 - shipTexWidth/2, shipTexHeight/2 - 15), this));
+		HashSet<ShipPart> rightEngines = new HashSet<ShipPart>();
+		rightEngines.add(new BasicRightSideEngine(new Vector2(shipTexWidth/2 - 22, shipTexHeight/2 - 15), this));
 		
 		parts.put(PartType.CANNON, cannons);
 		//parts.put(PartType.LASER, lasers);
 		parts.put(PartType.ENGINE, engines);
+		parts.put(PartType.LEFT_ENGINE, leftEngines);
+		parts.put(PartType.RIGHT_ENGINE, rightEngines);
 	}
 	
 	// UPDATE
@@ -145,21 +154,18 @@ public class Ship extends PhysicsObject {
 		
 		/* Move the ship */
 		// Sum the velocities of the engines!
+		HashSet<ShipPart> engines = new HashSet<ShipPart>();
+		engines.addAll(parts.get(PartType.ENGINE));
+		engines.addAll(parts.get(PartType.LEFT_ENGINE));
+		engines.addAll(parts.get(PartType.RIGHT_ENGINE));
 		Vector2 d = new Vector2(0, 0);
-		for (ShipPart p : parts.get(PartType.ENGINE)) {
+		for (ShipPart p : engines) {
 			ShipEngine e = (ShipEngine) p;
 			addForce(e.getForce());
 		}
 		
 		// Update movement
 		super.update();
-		
-		// Rotate all the parts
-		for (Entry<PartType, Set<ShipPart>> entry : parts.entrySet()) {
-			for (ShipPart p : entry.getValue()) {
-				p.setDispAngle(getAngle());
-			}
-		}
 		
 		hitBox.x = getPos().x + offX;
 		hitBox.y = getPos().y + offY;
@@ -219,6 +225,19 @@ public class Ship extends PhysicsObject {
 	
 	public void addAngle(float a) {
 		addTorque(a);
+	}
+	
+	public void thrustLeft() {
+		// Thrust the ship left by firing right engines
+		for (ShipPart p : parts.get(PartType.RIGHT_ENGINE)) {
+			((ShipEngine) p).increaseThrust();
+		}
+	}
+	public void thrustRight() {
+		// Thrust the ship right by firing left engines
+		for (ShipPart p : parts.get(PartType.LEFT_ENGINE)) {
+			((ShipEngine) p).increaseThrust();
+		}
 	}
 	
 	public void addSpeed() {
