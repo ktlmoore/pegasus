@@ -9,7 +9,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.tlear.pegasus.projectiles.BasicCannonShot;
 
 public class Pegasus extends ApplicationAdapter {
 	
@@ -36,6 +38,9 @@ public class Pegasus extends ApplicationAdapter {
 	// Model init
 	private Ship ship;
 	
+	// TEST
+	private BasicCannonShot t;
+	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -53,6 +58,9 @@ public class Pegasus extends ApplicationAdapter {
 		
 		// Initialise ship
 		ship = new Ship(windowWidth, windowHeight);
+		
+		// TEST
+		t = new BasicCannonShot(new Vector2(0, 0), new Vector2(1, 1));
 		
 	}
 
@@ -72,8 +80,14 @@ public class Pegasus extends ApplicationAdapter {
 		background.draw(batch, shapeRenderer, ship.getPos());
 		ship.draw(batch, shapeRenderer);
 		
+		// Render TEST
+		t.draw(batch, shapeRenderer);
+		
 		// Update the ship
 		ship.update();
+		
+		// Update TEST
+		t.update();
 		
 		// Checking for keyboard input
 		if (Gdx.input.isKeyPressed(Keys.Q)) {

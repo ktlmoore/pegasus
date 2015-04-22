@@ -55,10 +55,17 @@ public class PhysicsObject {
 		// Returns the angle of the object relative to the x-axis
 		return angle;
 	}
+	public Vector2 getVelocity() {
+		// Returns the velocity of the object
+		return new Vector2(velocity);
+	}
 	
 	/* Setters */
 	public void zeroVelocity() {
 		velocity = new Vector2(0, 0);
+	}
+	public void setVelocity(Vector2 vel) {
+		velocity = new Vector2(vel);
 	}
 	public void addForce(Vector2 f) {
 		// Add force to the total force on this object

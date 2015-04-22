@@ -7,8 +7,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.tlear.pegasus.physics.PhysicsObject;
 
-public abstract class LinearProjectile implements Projectile {
+public abstract class LinearProjectile extends PhysicsObject implements Projectile {
 	
 	/* Texture */
 	protected Texture img;
@@ -20,11 +21,8 @@ public abstract class LinearProjectile implements Projectile {
 	protected Vector2 disp;
 	
 	/* Model */
-	protected Vector2 pos;
-	protected Vector2 velocity;
 	
 	protected int damage;
-	protected Rectangle hitbox;
 	
 	public LinearProjectile() {
 		/* Texture */
@@ -34,16 +32,14 @@ public abstract class LinearProjectile implements Projectile {
 		disp = null;
 		
 		/* Model */
-		pos = new Vector2(0, 0);
-		velocity = new Vector2(0, 0);
 		
 		damage = 0;
 	}
 	
 	public LinearProjectile(Vector2 pos, Vector2 vel) {
 		this();
-		pos = new Vector2(pos);
-		velocity = new Vector2(vel);
+		setPos(pos);
+		setVelocity(vel);
 	
 	}
 	
@@ -56,12 +52,13 @@ public abstract class LinearProjectile implements Projectile {
 		tex = new TextureRegion(img);
 		
 		disp = new Vector2(pos.x - texWidth / 2, pos.y - texHeight / 2);
-		hitbox = new Rectangle(pos.x, pos.y, texWidth, texHeight);
 	}
 	
 	/* UPDATE */
 	public void update() {
-		move(Gdx.graphics.getDeltaTime());
+		super.update();
+		
+		disp.add(getVelocity());
 	}
 	/* DRAW */
 	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
@@ -92,22 +89,7 @@ public abstract class LinearProjectile implements Projectile {
 	}
 
 	@Override
-	public Vector2 getPos() {
-		return new Vector2(pos);
-	}
-
-	@Override
 	public int getDamage() {
 		return damage;
 	}
-
-	// Move the shot
-	private void move(float delta) {
-		pos.add(velocity.scl(delta));
-	}
-	
-	public Rectangle getHitbox() {
-		return hitbox;
-	}
-
 }
