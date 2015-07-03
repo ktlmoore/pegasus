@@ -18,6 +18,7 @@ import com.tlear.pegasus.shipParts.engines.BasicLeftSideEngine;
 import com.tlear.pegasus.shipParts.engines.BasicRightSideEngine;
 import com.tlear.pegasus.shipParts.engines.ShipEngine;
 import com.tlear.pegasus.shipParts.weapons.BasicCannon;
+import com.tlear.pegasus.projectiles.Projectile;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -299,6 +300,11 @@ public class Ship extends PhysicsObject {
 	
 	public Vector2 getCentre() {
 		return new Vector2(centre);
+	}
+	
+	/* PROJECTILES! */
+	public void addProjectile(Projectile p) {
+		engine.addProjectile(p);
 	}
 	
 	

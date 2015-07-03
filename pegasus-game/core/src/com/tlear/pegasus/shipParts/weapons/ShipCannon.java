@@ -2,6 +2,9 @@ package com.tlear.pegasus.shipParts.weapons;
 
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.Ship;
+import com.tlear.pegasus.projectiles.BasicCannonShot;
+import com.tlear.pegasus.projectiles.LinearProjectile;
+import com.tlear.pegasus.projectiles.Projectile;
 import com.tlear.pegasus.projectiles.ProjectileType;
 import com.tlear.pegasus.shipParts.Part;
 import com.tlear.pegasus.shipParts.PartType;
@@ -58,13 +61,34 @@ public abstract class ShipCannon extends ShipWeapon implements Part {
 	@Override
 	public void fire() {
 		// First, create the projectile we're firing
-		
-		
+		Projectile p = createProjectile(projectileType);
+		parent.addProjectile(p);
 		// Then give it to the parent to deal with.  All we do is fire it, then it's out of our hair
 		// (8) "Out of our haaaaaiiiiiiir" (8)
 	}
 	
-	/* CANNON SPECIFIC */
+	private Vector2 getFiringVector(int s) {
+		// Return the direction that the projectile is being fired in, scaled by its speed s
+		Vector2 v = new Vector2((float) Math.cos(parent.getAngle()), (float) Math.sin(parent.getAngle()));
+		v.nor();
+		v.scl(s);
+		return v;
+	}
 	
+	/* CANNON SPECIFIC */
+	private Projectile createProjectile(ProjectileType type) {
+		Projectile result;
+		switch (type) {
+		case LINEAR:
+			result = new BasicCannonShot(getFiringOrigin(), getFiringVector(1));
+			break;
+		case BASIC_CANNON_SHOT:
+			result = new BasicCannonShot(getFiringOrigin(), getFiringVector(10));
+			break;
+		default:
+			throw new Error("Cannot resolve the projectile type to a known type.");
+		}
+		return result;
+	}
 
 }

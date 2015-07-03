@@ -1,5 +1,7 @@
 package com.tlear.pegasus;
 
+import java.util.HashSet;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -12,6 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.tlear.pegasus.projectiles.BasicCannonShot;
+import com.tlear.pegasus.projectiles.Projectile;
 import com.tlear.pegasus.display.PegasusWindow;
 
 public class Pegasus extends ApplicationAdapter {
@@ -43,6 +46,7 @@ public class Pegasus extends ApplicationAdapter {
 	
 	// Model init
 	private Ship ship;
+	private HashSet<Projectile> projectiles;
 	
 	// TEST
 	private BasicCannonShot t;
@@ -63,6 +67,7 @@ public class Pegasus extends ApplicationAdapter {
 		
 		// Initialise ship
 		ship = new Ship(window.width, window.height, this);
+		projectiles = new HashSet<Projectile>();
 		
 		// TEST
 		t = new BasicCannonShot(new Vector2(0, 0), new Vector2(1, 1));
@@ -102,8 +107,10 @@ public class Pegasus extends ApplicationAdapter {
 		ship.draw(batch, shapeRenderer);
 		
 		
-		// Render TEST
-		t.draw(batch, shapeRenderer, window);
+		// Render projectiles
+		for (Projectile p : projectiles) {
+			p.draw(batch, shapeRenderer, window);
+		}
 		
 		
 		
@@ -119,8 +126,10 @@ public class Pegasus extends ApplicationAdapter {
 		window.x += (ship.getVelocity().x);
 		window.y += (ship.getVelocity().y);
 		
-		// Update TEST
-		t.update();
+		// Update projectiles
+		for (Projectile p : projectiles) {
+			p.update();
+		}
 	}
 	
 	private void checkInput() {
@@ -154,6 +163,11 @@ public class Pegasus extends ApplicationAdapter {
 			camera.unproject(touchPos);
 			//ship.fireLasers(touchPos);
 		}
+	}
+	
+	/* Projectile adding */
+	protected void addProjectile(Projectile p) {
+		projectiles.add(p);
 	}
 
 	@Override
