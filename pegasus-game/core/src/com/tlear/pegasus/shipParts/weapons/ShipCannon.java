@@ -44,6 +44,7 @@ public abstract class ShipCannon extends ShipWeapon implements Part {
 	
 	@Override
 	public void update() {
+		super.update();
 		cooldownTimer++;
 	}
 	
@@ -62,14 +63,18 @@ public abstract class ShipCannon extends ShipWeapon implements Part {
 	public void fire() {
 		// First, create the projectile we're firing
 		Projectile p = createProjectile(projectileType);
-		parent.addProjectile(p);
+		
 		// Then give it to the parent to deal with.  All we do is fire it, then it's out of our hair
 		// (8) "Out of our haaaaaiiiiiiir" (8)
+		parent.addProjectile(p);
 	}
 	
 	private Vector2 getFiringVector(int s) {
 		// Return the direction that the projectile is being fired in, scaled by its speed s
-		Vector2 v = new Vector2((float) Math.cos(parent.getAngle()), (float) Math.sin(parent.getAngle()));
+		// We work this out as simply the vector from the centre of the ship to the centre of the ship part!
+		Vector2 shipCentre = parent.getCentre();
+		Vector2 cannonCentre = getFiringOrigin();
+		Vector2 v = cannonCentre.sub(shipCentre);
 		v.nor();
 		v.scl(s);
 		return v;

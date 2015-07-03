@@ -116,7 +116,23 @@ public abstract class ShipPart implements Part {
 	}
 	
 	public void update() {
+		// Ah, I know what we need to update, we need to update angle and therefore location
+		angle = parent.getAngle();
 		
+		// We will need to recompute offset
+		float r = offset.len();
+		offset = new Vector2();
+		offset.x = (float) Math.cos(degToRad * (angle + 90)) * r;
+		offset.y = (float) Math.sin(degToRad * (angle + 90)) * r;
+	
+		// We can now define disp and origin as well
+		disp = new Vector2(parent.getCentre());
+		disp.add(offset);
+		disp.sub(new Vector2(width / 2, height / 2));
+
+		origin = new Vector2(offset);
+		origin.scl(-1);
+		origin.add(new Vector2(width / 2, height / 2));
 	}
 
 	/* MODEL FUNCTIONS */
