@@ -111,9 +111,6 @@ public class Pegasus extends ApplicationAdapter {
 		for (Projectile p : projectiles) {
 			p.draw(batch, shapeRenderer, window);
 		}
-		
-		
-		
 	}
 	
 	private void update() {
@@ -159,8 +156,9 @@ public class Pegasus extends ApplicationAdapter {
 		
 		if (Gdx.input.isTouched()) {
 			Vector3 touchPos = new Vector3();
-			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-			camera.unproject(touchPos);
+			//touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+			//camera.unproject(touchPos);
+			ship.testFire();
 			//ship.fireLasers(touchPos);
 		}
 	}

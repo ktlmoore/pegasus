@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.physics.PhysicsObject;
+import com.tlear.pegasus.shipParts.Part;
 import com.tlear.pegasus.shipParts.PartType;
 import com.tlear.pegasus.shipParts.ShipPart;
 import com.tlear.pegasus.shipParts.engines.BasicEngine;
@@ -307,5 +308,12 @@ public class Ship extends PhysicsObject {
 		engine.addProjectile(p);
 	}
 	
+	public void testFire() {
+		Set<ShipPart> s = parts.get(PartType.CANNON);
+		for (ShipPart p : s) {
+			BasicCannon c = (BasicCannon) p;
+			c.fire();
+		}
+	}
 	
 }
