@@ -125,7 +125,15 @@ public class Pegasus extends ApplicationAdapter {
 		
 		// Update projectiles
 		for (Projectile p : projectiles) {
-			p.update();
+			// First we check whether the projectile should be deleted and if not we update it
+			if (p.isMarked()) {
+				HashSet<Projectile> newProjectiles = new HashSet<Projectile>(projectiles);
+				newProjectiles.remove(p);
+				projectiles = newProjectiles;
+			} else {
+				p.update(this);
+			}
+			
 		}
 	}
 	

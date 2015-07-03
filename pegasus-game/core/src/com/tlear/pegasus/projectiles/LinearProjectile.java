@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.tlear.pegasus.Pegasus;
 import com.tlear.pegasus.physics.PhysicsObject;
 import com.tlear.pegasus.display.PegasusWindow;
 
@@ -23,7 +24,9 @@ public abstract class LinearProjectile extends PhysicsObject implements Projecti
 	
 	/* Model */
 	
+	private boolean marked;
 	protected int damage;
+	private int ttl;	// Time to live kills off projectiles when they've lived for long enough.
 	
 	public LinearProjectile() {
 		/* Texture */
@@ -33,8 +36,9 @@ public abstract class LinearProjectile extends PhysicsObject implements Projecti
 		disp = null;
 		
 		/* Model */
-		
+		ttl = 100;
 		damage = 0;
+		marked = false;
 	}
 	
 	public LinearProjectile(Vector2 pos, Vector2 vel) {
@@ -55,10 +59,17 @@ public abstract class LinearProjectile extends PhysicsObject implements Projecti
 	}
 	
 	/* UPDATE */
-	public void update() {
+	public void update(Pegasus engine) {
 		super.update();
 		
 		disp.add(getVelocity());
+		
+		if (ttl <= 0) {
+			// Mark the projectile for removal from the set when being checked
+			marked = true;
+		} else {
+			ttl--;
+		}
 	}
 	/* DRAW */
 	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer, PegasusWindow window) {
@@ -102,5 +113,9 @@ public abstract class LinearProjectile extends PhysicsObject implements Projecti
 	@Override
 	public int getDamage() {
 		return damage;
+	}
+	
+	public boolean isMarked() {
+		return marked;
 	}
 }
