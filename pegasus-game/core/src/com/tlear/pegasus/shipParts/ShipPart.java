@@ -28,13 +28,15 @@ public abstract class ShipPart implements Part {
 	protected float width;		// The width of the part (and by extension the texture)
 	protected float height;		// The height of the part (and by extension the texture)
 	
+	/* Meta */
 	protected Ship parent;		// The parent ship
+	protected PartType partType;	// What type of part is this
 	
 	/* Maths */
 	public final static float degToRad = (float) (Math.PI / 180);
 	public final static float radToDeg = (float) (180 / Math.PI);
 	
-	public ShipPart(Vector2 offset, Ship parent) {
+	public ShipPart(Vector2 offset, Ship parent, PartType type) {
 		// Creates a part at a given offset from a parent's centre
 		// If offset = (a, b) then from here to the centre is (-a, -b)
 		
@@ -69,10 +71,12 @@ public abstract class ShipPart implements Part {
 		disp = origin = null;	// We cannot say anything about rendering vectors until we have an idea of the texture
 		
 		this.parent = parent;	// We can always set the parent.
+		
+		this.partType = type;	// We don't know what this is yet
 	}
 	
-	public ShipPart(Vector2 offset, Ship parent, float width, float height) {
-		this(offset, parent);
+	public ShipPart(Vector2 offset, Ship parent, float width, float height, PartType type) {
+		this(offset, parent, type);
 		
 		// Now we have a width and height we can add this to the information we have.
 		this.width = width;
@@ -93,8 +97,8 @@ public abstract class ShipPart implements Part {
 		origin.add(new Vector2(width / 2, height / 2));
 	}
 	
-	public ShipPart(Vector2 offset, Ship parent, float width, float height, String texFileName) {
-		this(offset, parent, width, height);
+	public ShipPart(Vector2 offset, Ship parent, float width, float height, String texFileName, PartType type) {
+		this(offset, parent, width, height, type);
 		// Now we have a filename for the texture we can load it.
 		
 		img = new Texture(Gdx.files.internal("shipParts/" + texFileName));

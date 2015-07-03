@@ -96,29 +96,29 @@ public class PhysicsObject {
 		// Update acceleration to force / mass	a_t = F_t / m_t
 		acceleration = new Vector2(force);
 		acceleration.scl(Gdx.graphics.getDeltaTime() / mass);
-		System.out.println("ACCELERATION: " + acceleration);
-		System.out.println("FORCE: " + force);
-		System.out.println("MASS: " + mass);
+		//System.out.println("ACCELERATION: " + acceleration);
+		//System.out.println("FORCE: " + force);
+		//System.out.println("MASS: " + mass);
 		// Update velocity by acceleration v_t = v_t-1 + a_t
 		velocity.add(acceleration);
 		if (velocity.len() > maxVelocity) {
 			velocity.sub(acceleration);
 		}
-		System.out.println("VELOCITY: " + velocity);
+		//System.out.println("VELOCITY: " + velocity);
 		// Update position by velocity (x, y)_t = (x, y)_t-1 + v_t
 		pos.add(velocity);
-		System.out.println("POS: " + pos);
+		//System.out.println("POS: " + pos);
 		// Update momentum to mass * velocity	p_t = m_t * v_t
 		momentum = new Vector2(velocity);
 		momentum.scl(mass);
-		System.out.println("MOMENTUM: " + momentum);
+		//System.out.println("MOMENTUM: " + momentum);
 		// Update moment of intertia to m*k*k
 		momentOfInertia = mass * radius * radius;
-		System.out.println("MOMENT: " + momentOfInertia);
+		//System.out.println("MOMENT: " + momentOfInertia);
 		// Update angular velocity to torque / moment of inertia 	(alpha)_t = T_t / I_t
 		angularAcceleration = torque / momentOfInertia;
-		System.out.println("TORQUE: " + torque);
-		System.out.println("ANGULAR ACCELERATION: " + angularAcceleration);
+		//System.out.println("TORQUE: " + torque);
+		//System.out.println("ANGULAR ACCELERATION: " + angularAcceleration);
 		// Update angular velocity by angular acceleration	(omega)_t+1 = (omega)_t + (alpha)_t 
 		angularVelocity += angularAcceleration;
 		if (Math.abs(angularVelocity) > maxAngularVelocity) {
@@ -127,11 +127,11 @@ public class PhysicsObject {
 		if (angularAcceleration == 0) {
 			angularVelocity *= 0.95f;
 		}
-		System.out.println("ANGULAR VELOCITY: " + angularVelocity);
+		//System.out.println("ANGULAR VELOCITY: " + angularVelocity);
 		// Update angle by angular velocity	(theta)_t+1 = (theta)_t + (omega)_t+1
 		angle += angularVelocity;
 		angle %= 360;
-		System.out.println("ANGLE: " + angle);
+		//System.out.println("ANGLE: " + angle);
 		force = new Vector2();
 		torque = 0;
 		

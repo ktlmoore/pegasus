@@ -8,4 +8,5 @@ public class BasicCannonShot extends LinearProjectile implements Projectile {
 		super(pos, vel, 5, 5, "basicCannonShot.png");
 		damage = 5;
 	}
+
 }

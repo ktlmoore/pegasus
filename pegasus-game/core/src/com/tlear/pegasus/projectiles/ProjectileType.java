@@ -1,5 +1,5 @@
 package com.tlear.pegasus.projectiles;
 
 public enum ProjectileType {
-	LINEAR
+	LINEAR, BASIC_CANNON_SHOT
 }

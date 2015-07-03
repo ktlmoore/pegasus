@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.Ship;
 import com.tlear.pegasus.shipParts.Part;
 import com.tlear.pegasus.shipParts.ShipPart;
+import com.tlear.pegasus.shipParts.PartType;
 
 public abstract class ShipEngine extends ShipPart implements Part {
 	// Extra variables
@@ -30,8 +31,8 @@ public abstract class ShipEngine extends ShipPart implements Part {
 	
 	protected int thrustDirection;	// -1, 0, 1 for BACK, NONE, FWD
 	
-	public ShipEngine(Vector2 offset, Ship parent) {
-		super(offset, parent);
+	public ShipEngine(Vector2 offset, Ship parent, PartType type) {
+		super(offset, parent, type);
 		// Assuming no texture
 		
 		maxSpeed = 0;
@@ -43,8 +44,8 @@ public abstract class ShipEngine extends ShipPart implements Part {
 		texFwd = texBwd = null;
 	}
 	
-	public ShipEngine(Vector2 offset, Ship parent, float w, float h) {
-		super(offset, parent, w, h);
+	public ShipEngine(Vector2 offset, Ship parent, float w, float h, PartType type) {
+		super(offset, parent, w, h, type);
 		
 		maxSpeed = 0;
 		force = new Vector2(0, 0);
@@ -55,8 +56,8 @@ public abstract class ShipEngine extends ShipPart implements Part {
 		texFwd = texBwd = null;
 	}
 	
-	public ShipEngine(Vector2 offset, Ship parent, float w, float h, String texFileName, String texFileNameFwd, String texFileNameBwd) {
-		super(offset, parent, w, h, texFileName);
+	public ShipEngine(Vector2 offset, Ship parent, float w, float h, String texFileName, String texFileNameFwd, String texFileNameBwd, PartType type) {
+		super(offset, parent, w, h, texFileName, type);
 		
 		maxSpeed = 0;
 		force = new Vector2(0, 0);

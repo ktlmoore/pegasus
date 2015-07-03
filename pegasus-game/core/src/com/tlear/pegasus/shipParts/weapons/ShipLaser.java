@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.Ship;
 import com.tlear.pegasus.shipParts.Part;
+import com.tlear.pegasus.shipParts.PartType;
 
 @Deprecated
 public class ShipLaser extends ShipWeapon implements Part {
@@ -21,7 +22,7 @@ public class ShipLaser extends ShipWeapon implements Part {
 	/*** CONSTRUCTORS ***/
 	
 	public ShipLaser(Vector2 offset, Ship parent) {
-		super(offset, parent, 21, 21, "shipLaserTurret.png"); 
+		super(offset, parent, 21, 21, "shipLaserTurret.png", PartType.LASER); 
 	
 		firing = false;
 		

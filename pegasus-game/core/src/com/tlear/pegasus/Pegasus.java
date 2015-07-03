@@ -12,17 +12,23 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.tlear.pegasus.projectiles.BasicCannonShot;
+import com.tlear.pegasus.display.PegasusWindow;
 
 public class Pegasus extends ApplicationAdapter {
 	
 	public Pegasus(int width, int height) {
-		windowWidth = width;
-		windowHeight = height;
+		window = new PegasusWindow(0, 0, width, height);
 	}
 
+	private PegasusWindow window;
 	
+	/* Deprecated 3/6/15
 	private int windowWidth;
 	private int windowHeight;
+	private Vector2 window;
+	
+	private Vector2 bottomLeft;
+	*/
 	
 	BitmapFont font;
 	
@@ -49,15 +55,14 @@ public class Pegasus extends ApplicationAdapter {
 		font = new BitmapFont();
 		font.setColor(Color.RED);
 		
-		background = new Background(windowWidth, windowHeight);
+		background = new Background(window.width, window.height);
 		
 		// Initialise camera
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, windowWidth, windowHeight);
-		
+		camera.setToOrtho(false, window.width, window.height);
 		
 		// Initialise ship
-		ship = new Ship(windowWidth, windowHeight);
+		ship = new Ship(window.width, window.height, this);
 		
 		// TEST
 		t = new BasicCannonShot(new Vector2(0, 0), new Vector2(1, 1));
@@ -76,18 +81,49 @@ public class Pegasus extends ApplicationAdapter {
 		
 		batch.setProjectionMatrix(camera.combined);
 		shapeRenderer.setProjectionMatrix(camera.combined);
+		
+		// Draw
+		draw();
+		// Update
+		update();
+		// Check for input
+		checkInput();
+
+		
+		
+	}
+	
+	private void draw() {
+		// Draws all objects
+		/* TODO ONLY RENDER THINGS THAT ARE ON THE SCREEN!!! */
+		//System.out.println("DRAW");
 		// Render the ship
 		background.draw(batch, shapeRenderer, ship.getPos());
 		ship.draw(batch, shapeRenderer);
 		
-		// Render TEST
-		t.draw(batch, shapeRenderer);
 		
+		// Render TEST
+		t.draw(batch, shapeRenderer, window);
+		
+		
+		
+	}
+	
+	private void update() {
+		// Updates all objects
+		//System.out.println("UPDATE");
 		// Update the ship
 		ship.update();
 		
+		// Update the bottom left coordinates
+		window.x += (ship.getVelocity().x);
+		window.y += (ship.getVelocity().y);
+		
 		// Update TEST
 		t.update();
+	}
+	
+	private void checkInput() {
 		
 		// Checking for keyboard input
 		if (Gdx.input.isKeyPressed(Keys.Q)) {
@@ -118,9 +154,6 @@ public class Pegasus extends ApplicationAdapter {
 			camera.unproject(touchPos);
 			//ship.fireLasers(touchPos);
 		}
-
-		
-		
 	}
 
 	@Override

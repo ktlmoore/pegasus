@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.physics.PhysicsObject;
+import com.tlear.pegasus.display.PegasusWindow;
 
 public abstract class LinearProjectile extends PhysicsObject implements Projectile {
 	
@@ -40,7 +41,6 @@ public abstract class LinearProjectile extends PhysicsObject implements Projecti
 		this();
 		setPos(pos);
 		setVelocity(vel);
-	
 	}
 	
 	public LinearProjectile(Vector2 pos, Vector2 vel, float texW, float texH, String texFileName) {
@@ -61,11 +61,22 @@ public abstract class LinearProjectile extends PhysicsObject implements Projecti
 		disp.add(getVelocity());
 	}
 	/* DRAW */
-	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer, PegasusWindow window) {
+		if (!isInWindow(window)) return;	// do not draw if not in the window.
 		System.out.println(disp);
 		batch.begin();
 		batch.draw(tex, disp.x, disp.y, texWidth, texHeight);
 		batch.end();
+	}
+	
+	private boolean isInWindow(PegasusWindow window) {
+		// Returns true if the object is in the window to be drawn
+		if (disp.x - texWidth / 2 > window.topRight.x) return false;
+		if (disp.y - texWidth / 2 > window.topRight.y) return false;
+		if (disp.x + texWidth / 2 < window.bottomLeft.x) return false;
+		if (disp.y + texWidth / 2 < window.bottomLeft.y) return false;
+		
+		return true;
 	}
 
 	@Override

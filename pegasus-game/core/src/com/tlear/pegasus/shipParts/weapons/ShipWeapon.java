@@ -3,6 +3,7 @@ package com.tlear.pegasus.shipParts.weapons;
 import com.badlogic.gdx.math.Vector2;
 import com.tlear.pegasus.Ship;
 import com.tlear.pegasus.shipParts.Part;
+import com.tlear.pegasus.shipParts.PartType;
 import com.tlear.pegasus.shipParts.ShipPart;
 
 public abstract class ShipWeapon extends ShipPart implements Part {
@@ -14,16 +15,16 @@ public abstract class ShipWeapon extends ShipPart implements Part {
 	
 	/*** Constructors ***/
 
-	public ShipWeapon(Vector2 offset, Ship parent) {
-		super(offset, parent);
+	public ShipWeapon(Vector2 offset, Ship parent, PartType type) {
+		super(offset, parent, type);
 	}
 	
-	public ShipWeapon(Vector2 offset, Ship parent, float w, float h) {
-		super(offset, parent, w, h);
+	public ShipWeapon(Vector2 offset, Ship parent, float w, float h, PartType type) {
+		super(offset, parent, w, h, type);
 	}
 	
-	public ShipWeapon(Vector2 offset, Ship parent, float w, float h, String texFileName) {
-		super(offset, parent, w, h, texFileName);
+	public ShipWeapon(Vector2 offset, Ship parent, float w, float h, String texFileName, PartType type) {
+		super(offset, parent, w, h, texFileName, type);		
 	}
 	
 	/*** Methods ***/

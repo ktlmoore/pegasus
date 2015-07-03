@@ -26,6 +26,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public class Ship extends PhysicsObject {
+	// Meta
+	private Pegasus engine;
+	
+	//
 	private Rectangle hitBox;
 	
 	// Ship display position relative to centre
@@ -65,8 +69,10 @@ public class Ship extends PhysicsObject {
 	private boolean debugMode;
 	private String debugString;
 	
-	public Ship(int windowWidth, int windowHeight) {
+	public Ship(int windowWidth, int windowHeight, Pegasus engine) {
 		super();
+		
+		this.engine = engine;
 		/* Load textures */
 		
 		hullImg = new Texture(Gdx.files.internal("shipBase/pegasus1.png"));
