@@ -28,6 +28,8 @@ public abstract class ShipPart implements Part {
 	protected float width;		// The width of the part (and by extension the texture)
 	protected float height;		// The height of the part (and by extension the texture)
 	
+	protected boolean updatedRotation; // Whether or not to bother rotating about the origin when we draw the texture.
+	
 	/* Meta */
 	protected Ship parent;		// The parent ship
 	protected PartType partType;	// What type of part is this
@@ -73,6 +75,8 @@ public abstract class ShipPart implements Part {
 		this.parent = parent;	// We can always set the parent.
 		
 		this.partType = type;	// We don't know what this is yet
+		
+		this.updatedRotation = false;
 	}
 	
 	public ShipPart(Vector2 offset, Ship parent, float width, float height, PartType type) {
@@ -111,7 +115,12 @@ public abstract class ShipPart implements Part {
 	public void draw(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		// If we have a texture, we draw it.  Else we draw the wireframe.
 		if (tex != null) {
-			batch.draw(tex, disp.x, disp.y, origin.x, origin.y, width, height, 1.0f, 1.0f, parent.getAngle());
+			if (updatedRotation) {
+				batch.draw(tex, disp.x, disp.y, width/2, height/2, width, height, 1.0f, 1.0f, parent.getAngle());
+			} else {
+				batch.draw(tex, disp.x, disp.y, origin.x, origin.y, width, height, 1.0f, 1.0f, parent.getAngle());
+			}
+			
 		}
 	}
 	
@@ -122,8 +131,8 @@ public abstract class ShipPart implements Part {
 		// We will need to recompute offset
 		float r = offset.len();
 		offset = new Vector2();
-		offset.x = (float) Math.cos(degToRad * (angle + 90)) * r;
-		offset.y = (float) Math.sin(degToRad * (angle + 90)) * r;
+		offset.x = (float) Math.cos(degToRad * (angle +90)) * r;
+		offset.y = (float) Math.sin(degToRad * (angle +90)) * r;
 	
 		// We can now define disp and origin as well
 		disp = new Vector2(parent.getCentre());
@@ -133,6 +142,8 @@ public abstract class ShipPart implements Part {
 		origin = new Vector2(offset);
 		origin.scl(-1);
 		origin.add(new Vector2(width / 2, height / 2));
+		
+		updatedRotation = true;
 	}
 
 	/* MODEL FUNCTIONS */

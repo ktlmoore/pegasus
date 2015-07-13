@@ -98,6 +98,7 @@ public abstract class ShipEngine extends ShipPart implements Part {
 	
 	@Override
 	public void update() {
+		//super.update();
 		thrust(thrustDirection);
 		resetThrustDirection();
 	}
